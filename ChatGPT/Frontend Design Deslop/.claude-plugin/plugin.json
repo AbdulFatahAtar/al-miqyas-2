@@ -1,0 +1,24 @@
+{
+    "name": "cc-skills",
+    "description": "AI Agent Skills",
+    "version": "1.14.0",
+    "author": {
+        "name": "Samuel Berthe",
+        "email": "hey@samuel-berthe.fr"
+    },
+    "homepage": "https://github.com/samber/cc-skills",
+    "repository": "https://github.com/samber/cc-skills",
+    "license": "MIT",
+    "keywords": [
+        "claude-code",
+        "claude-code-plugin",
+        "plugin",
+        "ai-agent",
+        "skills",
+        "marketing",
+        "engineering",
+        "developer",
+        "coding",
+        "productivity"
+    ]
+}

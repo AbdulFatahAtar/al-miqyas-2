@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "program": {
+    "code": "diwan-onboarding",
+    "titleAr": "تهيئة الموظفين الجدد — ديوان المظالم",
+    "formVersion": 1,
+    "passingScorePercent": 80
+  },
+  "forms": [
+    {
+      "kind": "pre",
+      "titleAr": "القياس القبلي | تهيئة الموظفين الجدد — ديوان المظالم",
+      "submitButtonAr": "إرسال القياس القبلي",
+      "descriptionAr": "يحدد هذا القياس خط الأساس قبل بدء التجربة، ولا يمنع المتدرّب من إكمال البرنامج.",
+      "successMessageAr": "تم استلام القياس القبلي بنجاح. يمكنك الآن العودة إلى صفحة رحلتك التدريبية."
+    },
+    {
+      "kind": "post",
+      "titleAr": "القياس البعدي | تهيئة الموظفين الجدد — ديوان المظالم",
+      "submitButtonAr": "إرسال القياس البعدي",
+      "descriptionAr": "يقيس هذا النموذج مستوى المعرفة والثقة بعد إكمال التجربة.",
+      "successMessageAr": "تم استلام القياس البعدي بنجاح. ستظهر النتيجة وحالة الاستحقاق في صفحة رحلتك بعد اكتمال المعالجة."
+    }
+  ],
+  "settings": {
+    "language": "ar",
+    "direction": "rtl",
+    "layout": "classic-single-column",
+    "showProgress": true,
+    "saveAndContinue": false,
+    "browserAutocomplete": false,
+    "shuffleQuestions": false,
+    "shuffleOptions": false,
+    "showCorrectAnswers": false,
+    "showScoreAfterSubmit": false,
+    "preventPublicCloning": true,
+    "deviceOrIpSubmissionLimit": false,
+    "uniqueField": "submissionToken",
+    "emailNotificationsContainHiddenFields": false
+  },
+  "trustBoundary": {
+    "authoritativeSubmissionIdentity": "submissionToken",
+    "singleUseToken": true,
+    "deriveAssessmentKindFromConfiguredFormId": true,
+    "deriveProgramAndVersionFromConfiguredFormId": true,
+    "doNotTrustClientMetadata": [
+      "traineeId",
+      "assessmentKind",
+      "programCode",
+      "formVersion"
+    ]
+  },
+  "hiddenFields": [
+    {
+      "key": "submissionToken",
+      "type": "short-text",
+      "required": true,
+      "prefill": true
+    },
+    {
+      "key": "traineeId",
+      "type": "short-text",
+      "required": true,
+      "prefill": true,
+      "pattern": "^AMD-[A-Z0-9]{5}$"
+    },
+    {
+      "key": "assessmentKind",
+      "type": "short-text",
+      "required": true,
+      "fixedByForm": true
+    },
+    {
+      "key": "programCode",
+      "type": "short-text",
+      "required": true,
+      "defaultValue": "diwan-onboarding"
+    },
+    {
+      "key": "formVersion",
+      "type": "short-text",
+      "required": true,
+      "defaultValue": "1"
+    }
+  ],
+  "knowledgeQuestions": [
+    {
+      "key": "K01",
+      "learningObjective": "LO-1",
+      "source": "S7-Q1",
+      "promptAr": "متى بدأ ديوان المظالم؟",
+      "options": {
+        "A": "عام 1373هـ.",
+        "B": "عام 1402هـ.",
+        "C": "عام 1428هـ."
+      },
+      "answer": "A",
+      "internalApprovalRequired": false
+    },
+    {
+      "key": "K02",
+      "learningObjective": "LO-1",
+      "source": "S1-Q2",
+      "promptAr": "ما الصفة النظامية لديوان المظالم اليوم؟",
+      "options": {
+        "A": "جهة تابعة لوزارة العدل.",
+        "B": "هيئة قضاء إداري مستقلة ترتبط مباشرة بالملك.",
+        "C": "لجنة شبه قضائية."
+      },
+      "answer": "B",
+      "internalApprovalRequired": false
+    },
+    {
+      "key": "K03",
+      "learningObjective": "LO-1",
+      "source": "S7-Q2",
+      "promptAr": "ما أعلى درجات التقاضي الإداري؟",
+      "options": {
+        "A": "محاكم الاستئناف الإدارية.",
+        "B": "المحكمة الإدارية العليا.",
+        "C": "محكمة التنفيذ الإدارية."
+      },
+      "answer": "B",
+      "internalApprovalRequired": false
+    },
+    {
+      "key": "K04",
+      "learningObjective": "LO-2",
+      "source": "S7-Q3",
+      "promptAr": "في أي دور تقع إدارة الموارد البشرية ضمن سيناريو البرنامج؟",
+      "options": {
+        "A": "الدور الثالث.",
+        "B": "الدور الخامس.",
+        "C": "الدور السابع."
+      },
+      "answer": "C",
+      "internalApprovalRequired": true
+    },
+    {
+      "key": "K05",
+      "learningObjective": "LO-3",
+      "source": "S7-Q4",
+      "promptAr": "أي إدارة تتولى تهيئة الموظفين الجدد؟",
+      "options": {
+        "A": "إدارة التواصل الداخلي.",
+        "B": "إدارة تطوير الموارد البشرية.",
+        "C": "إدارة عمليات الموارد البشرية."
+      },
+      "answer": "A",
+      "internalApprovalRequired": true
+    },
+    {
+      "key": "K06",
+      "learningObjective": "LO-3",
+      "source": "S3-Q3",
+      "promptAr": "أي إدارة تتولى الإجراءات التشغيلية المتعلقة بالرواتب والإجازات والبطاقات؟",
+      "options": {
+        "A": "إدارة عمليات الموارد البشرية.",
+        "B": "إدارة التواصل الداخلي.",
+        "C": "الإدارة العامة للشؤون المالية."
+      },
+      "answer": "A",
+      "internalApprovalRequired": true
+    },
+    {
+      "key": "K07",
+      "learningObjective": "LO-4",
+      "source": "S7-Q5",
+      "promptAr": "قدم لك مراجع هدية رمزية. ما التصرف الصحيح؟",
+      "options": {
+        "A": "قبولها لأنها رمزية.",
+        "B": "رفضها بلباقة.",
+        "C": "قبولها ثم إبلاغ المدير."
+      },
+      "answer": "B",
+      "internalApprovalRequired": false
+    },
+    {
+      "key": "K08",
+      "learningObjective": "LO-4",
+      "source": "S7-Q6",
+      "promptAr": "كُلّفت بمعاملة تخص قريبًا لك من الدرجة الثالثة. ما الواجب؟",
+      "options": {
+        "A": "تنفيذها بحيادية دون إفصاح.",
+        "B": "الإفصاح خطيًا والانسحاب من المهمة.",
+        "C": "رفض المهمة شفهيًا دون توثيق."
+      },
+      "answer": "B",
+      "internalApprovalRequired": false
+    },
+    {
+      "key": "K09",
+      "learningObjective": "LO-5",
+      "source": "S7-Q7",
+      "promptAr": "أي منصة تستخدم لتسجيل الحضور والانصراف؟",
+      "options": {
+        "A": "خدماتي.",
+        "B": "داعم.",
+        "C": "التطبيق الكفي."
+      },
+      "answer": "C",
+      "internalApprovalRequired": true
+    },
+    {
+      "key": "K10",
+      "learningObjective": "LO-6",
+      "source": "S7-Q8",
+      "promptAr": "ما أول إجراء في اليوم الأول حسب تسلسل السيناريو؟",
+      "options": {
+        "A": "التوجه إلى المدير المباشر.",
+        "B": "تسجيل البيانات والتحقق من الهوية لدى خدمة الزائرين.",
+        "C": "تقديم طلب صرف المواد."
+      },
+      "answer": "B",
+      "internalApprovalRequired": true
+    }
+  ],
+  "confidenceScale": {
+    "min": 1,
+    "max": 5,
+    "labelsAr": {
+      "1": "لا أستطيع تنفيذ ذلك.",
+      "2": "أستطيع بدرجة ضعيفة.",
+      "3": "أستطيع بدرجة متوسطة.",
+      "4": "أستطيع بدرجة جيدة.",
+      "5": "أستطيع بثقة عالية."
+    },
+    "items": [
+      {
+        "key": "C01",
+        "learningObjective": "LO-1",
+        "promptAr": "أستطيع شرح هوية ديوان المظالم واختصاصاته الأساسية."
+      },
+      {
+        "key": "C02",
+        "learningObjective": "LO-2",
+        "promptAr": "أستطيع تحديد المرافق والإدارات التي أحتاجها داخل مقر العمل."
+      },
+      {
+        "key": "C03",
+        "learningObjective": "LO-3",
+        "promptAr": "أستطيع تحديد الإدارة المختصة بطلبات الموظف المختلفة."
+      },
+      {
+        "key": "C04",
+        "learningObjective": "LO-4",
+        "promptAr": "أستطيع اتخاذ القرار الصحيح في مواقف السلوك الوظيفي وتعارض المصالح."
+      },
+      {
+        "key": "C05",
+        "learningObjective": "LO-5",
+        "promptAr": "أستطيع اختيار المنصة الرقمية المناسبة وتنفيذ الإجراء الأساسي عليها."
+      },
+      {
+        "key": "C06",
+        "learningObjective": "LO-6",
+        "promptAr": "أستطيع تنفيذ إجراءات يومي الأول بالترتيب الصحيح دون مساعدة."
+      }
+    ]
+  }
+}

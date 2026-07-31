@@ -1,0 +1,10 @@
+.DS_Store
+**/.DS_Store
+.pnpm-store/
+**/node_modules/
+**/.next/
+**/.git/
+**/.env.local
+**/.env
+*.log
+**/*.log
