@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "./icons";
 import { StatusBadge } from "./app-shell";
+import { ThemeToggle } from "./theme-toggle";
 import { createSupabaseBrowserClient } from "../lib/supabase/client";
 
 type PublicRouteData = {
@@ -224,7 +225,10 @@ export function TraineeRoutingPage({
             <small>تُشغّل بواسطة شركة الأمد</small>
           </div>
         </div>
-        <Link href="/login">دخول المشرفين</Link>
+        <div className="public-header-actions">
+          <ThemeToggle compact />
+          <Link href="/login">دخول المشرفين</Link>
+        </div>
       </header>
 
       <div className="public-content public-content-single">

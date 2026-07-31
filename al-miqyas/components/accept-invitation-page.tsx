@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { createSupabaseBrowserClient } from "../lib/supabase/client";
 import { Icon } from "./icons";
+import { ThemeToggle } from "./theme-toggle";
 
 type InvitationState = "checking" | "ready" | "invalid" | "completed";
 
@@ -160,6 +161,7 @@ export function AcceptInvitationPage({
       </section>
 
       <section className="invitation-main">
+        <div className="auth-theme-control"><ThemeToggle compact /></div>
         <div className="invitation-card">
           {state === "checking" && (
             <div className="invitation-state">
@@ -275,4 +277,3 @@ export function AcceptInvitationPage({
     </main>
   );
 }
-

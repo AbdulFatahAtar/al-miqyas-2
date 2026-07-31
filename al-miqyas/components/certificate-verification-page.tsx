@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Icon } from "./icons";
 import { StatusBadge } from "./app-shell";
+import { ThemeToggle } from "./theme-toggle";
 
 export type PublicCertificate = {
   certificate_status: "valid" | "revoked" | "superseded";
@@ -87,7 +88,10 @@ export function CertificateVerificationPage({
             <small>التحقق من الشهادات</small>
           </div>
         </div>
-        <Link href="/login">دخول المشرفين</Link>
+        <div className="public-header-actions">
+          <ThemeToggle compact />
+          <Link href="/login">دخول المشرفين</Link>
+        </div>
       </header>
 
       <div className="verify-wrap">

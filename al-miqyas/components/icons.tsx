@@ -29,7 +29,10 @@ export type IconName =
   | "lock"
   | "qr"
   | "edit"
-  | "logout";
+  | "logout"
+  | "sun"
+  | "moon"
+  | "monitor";
 
 export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
   const common = {
@@ -74,6 +77,9 @@ export function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
     qr: <><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z" /><path d="M14 14h2v2h-2zM18 14h2v6h-2zM14 18h2v2h-2z" /></>,
     edit: <><path d="M4 20h4l11-11-4-4L4 16v4Z" /><path d="m13 7 4 4M4 20l4-1" /></>,
     logout: <><path d="M10 5H5v14h5" /><path d="M13 8l4 4-4 4M8 12h9" /></>,
+    sun: <><circle cx="12" cy="12" r="3.5" /><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4" /></>,
+    moon: <path d="M20 15.2A8.4 8.4 0 0 1 8.8 4 8.5 8.5 0 1 0 20 15.2Z" />,
+    monitor: <><rect x="3" y="4" width="18" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></>,
   };
 
   return <svg {...common}>{paths[name]}</svg>;

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { Icon, type IconName } from "./icons";
+import { ThemeToggle } from "./theme-toggle";
 import { createSupabaseBrowserClient } from "../lib/supabase/client";
 
 const navigation: Array<{ href: string; label: string; icon: IconName }> = [
@@ -226,6 +227,10 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
         </nav>
 
         <div className="sidebar-foot">
+          <div className="sidebar-theme-control">
+            <span>مظهر الموقع</span>
+            <ThemeToggle compact />
+          </div>
           <div className="environment-note"><span className="signal-dot" />تشغيل مختلط · بعض الصفحات تجريبية</div>
           <Link href="/account" className={active("/account") ? "operator-card operator-active" : "operator-card"}>
             <span className="operator-avatar">م</span>
@@ -242,6 +247,7 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
             <div><small>منظومة المقياس</small><strong>{title ?? "لوحة التشغيل"}</strong></div>
           </div>
           <div className="topbar-actions">
+            <ThemeToggle compact />
             <div className="topbar-popover-wrap">
               <button className="icon-button" aria-label="الإشعارات" aria-expanded={notificationsOpen} onClick={() => { setNotificationsOpen((value) => !value); setAccountOpen(false); }}>
                 <Icon name="bell" /><span className="notification-dot" />

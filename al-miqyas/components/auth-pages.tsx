@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { Icon } from "./icons";
+import { ThemeToggle } from "./theme-toggle";
 import { createSupabaseBrowserClient } from "../lib/supabase/client";
 
 function AuthFrame({
@@ -25,6 +26,7 @@ function AuthFrame({
         <div className="auth-pipeline" aria-hidden="true"><i className="done" /><i className="done" /><i className="active" /><i /><i /></div>
       </section>
       <section className="auth-panel">
+        <div className="auth-theme-control"><ThemeToggle compact /></div>
         <div className={wide ? "auth-panel-inner auth-panel-inner-wide" : "auth-panel-inner"}><div className="auth-mobile-brand"><img className="brand-mark" src="/brand/al-amad-mark.png" alt="شعار شركة الأمد" /><strong>منظومة المقياس</strong></div><header><span className="eyebrow">دخول آمن عبر البريد</span><h2>{title}</h2><p>{description}</p></header>{children}<footer><Link href="/verify/VER-AMD-7K9FQ">التحقق من شهادة</Link><span>·</span><Link href="/t/AMD-7K9FQ">صفحة المتدرّب</Link></footer></div>
       </section>
     </main>
