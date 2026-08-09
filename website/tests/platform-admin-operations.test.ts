@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import vm from "node:vm";
+import { normalizeIntlWhitespace } from "../lib/date-time.ts";
 import { isTrustedSameOriginRequest } from "../lib/http/request-security.ts";
 
 const migrationSource = readFileSync(
@@ -43,6 +44,16 @@ function routeUuidPattern() {
   assert.ok(match, "platform invitation route must declare an anchored UUID pattern");
   return vm.runInNewContext(match[1]) as RegExp;
 }
+
+test("platform dates normalize browser-specific no-break spaces before hydration", () => {
+  assert.equal(
+    normalizeIntlWhitespace("٢٨/٠٧/٢٠٢٦، ٢:١٨\u00a0م"),
+    "٢٨/٠٧/٢٠٢٦، ٢:١٨ م",
+  );
+  assert.equal(normalizeIntlWhitespace("09\u202fAug\u202f2026"), "09 Aug 2026");
+  assert.match(platformPageSource, /normalizeIntlWhitespace\(dateFormatter\.format\(date\)\)/);
+  assert.match(auditComponentSource, /normalizeIntlWhitespace\(dateFormatter\.format\(date\)\)/);
+});
 
 test("Migration 031 invitation RPC is authenticated, permission-gated, and tenant-bound", () => {
   const invitation = section(

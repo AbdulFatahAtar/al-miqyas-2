@@ -17,6 +17,7 @@ import {
   type RoleKey,
 } from "../../lib/auth/permissions";
 import { requirePagePermission } from "../../lib/auth/server";
+import { normalizeIntlWhitespace } from "../../lib/date-time";
 import { createSupabaseServerClient } from "../../lib/supabase/server";
 import styles from "./platform.module.css";
 
@@ -73,7 +74,9 @@ const dateFormatter = new Intl.DateTimeFormat("ar-SA-u-ca-gregory", {
 
 function formatDate(value: string) {
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "غير متاح" : dateFormatter.format(date);
+  return Number.isNaN(date.getTime())
+    ? "غير متاح"
+    : normalizeIntlWhitespace(dateFormatter.format(date));
 }
 
 function shortId(value: string | null) {

@@ -2,6 +2,7 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { createSupabaseBrowserClient } from "../lib/supabase/client";
+import { normalizeIntlWhitespace } from "../lib/date-time";
 import { Icon } from "./icons";
 import { StatusBadge } from "./app-shell";
 import styles from "../app/platform/platform.module.css";
@@ -58,7 +59,9 @@ const dateFormatter = new Intl.DateTimeFormat("ar-SA-u-ca-gregory", {
 
 function formatDate(value: string) {
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "غير متاح" : dateFormatter.format(date);
+  return Number.isNaN(date.getTime())
+    ? "غير متاح"
+    : normalizeIntlWhitespace(dateFormatter.format(date));
 }
 
 function shortId(value: string | null) {
