@@ -20,6 +20,7 @@ export type PlatformAuditEventRecord = {
   severity: "info" | "notice" | "warning" | "critical";
   reason: string | null;
   created_at: string;
+  created_at_label: string;
   total_count: number;
 };
 
@@ -122,7 +123,12 @@ export function PlatformAuditLog({
       return;
     }
 
-    const rows = (data ?? []) as PlatformAuditEventRecord[];
+    const rows = ((data ?? []) as Array<
+      Omit<PlatformAuditEventRecord, "created_at_label">
+    >).map((row) => ({
+      ...row,
+      created_at_label: formatDate(row.created_at),
+    }));
     setEvents(rows);
     setTotal(rows[0]?.total_count ?? (nextPage === 0 ? rows.length : total));
     setPage(nextPage);
@@ -284,7 +290,7 @@ export function PlatformAuditLog({
               </div>
               <div className={styles.auditMeta}>
                 <span>{event.org_id ? organizationNames.get(event.org_id) ?? shortId(event.org_id) : "المنصة"}</span>
-                <span>{formatDate(event.created_at)}</span>
+                <span>{event.created_at_label}</span>
                 <span>
                   المنفذ: {event.actor_user_id ? userNames.get(event.actor_user_id) ?? shortId(event.actor_user_id) : "النظام"}
                 </span>

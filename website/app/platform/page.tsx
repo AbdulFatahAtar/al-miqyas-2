@@ -129,8 +129,14 @@ export default async function PlatformPage() {
     (membershipsResult.data as MembershipRow[] | null) ?? [];
   const platformOwners =
     (ownersResult.data as PlatformOwnerRow[] | null) ?? [];
-  const auditRows =
-    (auditResult.data as PlatformAuditEventRecord[] | null) ?? [];
+  const auditRows = (
+    (auditResult.data as Array<
+      Omit<PlatformAuditEventRecord, "created_at_label">
+    > | null) ?? []
+  ).map((row) => ({
+    ...row,
+    created_at_label: formatDate(row.created_at),
+  }));
   const platformUsers =
     (usersResult.data as PlatformUserRecord[] | null) ?? [];
   const loadFailures = [

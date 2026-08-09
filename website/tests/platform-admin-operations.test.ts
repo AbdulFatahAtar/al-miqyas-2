@@ -275,6 +275,17 @@ test("platform audit UI forwards every filter and uses total-count pagination", 
   assert.match(auditComponentSource, /aria-busy=\{isLoading\}/);
   assert.match(platformPageSource, /page_size: 20/);
   assert.match(platformPageSource, /page_offset: 0/);
+  assert.match(
+    platformPageSource,
+    /created_at_label: formatDate\(row\.created_at\)/,
+    "initial audit dates must be formatted on the server before hydration",
+  );
+  assert.match(auditComponentSource, /\{event\.created_at_label\}/);
+  assert.doesNotMatch(
+    auditComponentSource,
+    /\{formatDate\(event\.created_at\)\}/,
+    "the client must not reformat server-rendered audit dates during hydration",
+  );
 });
 
 test("platform administration tabs implement the RTL keyboard contract", () => {
