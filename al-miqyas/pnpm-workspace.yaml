@@ -1,7 +1,0 @@
-allowBuilds:
-  core-js: false
-  sharp: true
-onlyBuiltDependencies:
-  - sharp
-ignoredBuiltDependencies:
-  - core-js
