@@ -1,0 +1,678 @@
+.pageIntro {
+  padding-block: var(--space-4) var(--space-8);
+  border-block-end: 1px solid var(--border-strong);
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(420px, 0.9fr);
+  align-items: end;
+  gap: var(--space-8);
+}
+
+.pageIdentity {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.pageIndex {
+  padding-block-start: var(--text-xs);
+  color: var(--tenant-accent);
+  font: 600 0.8125rem/1 var(--font-mono);
+}
+
+.pageIdentity p,
+.documentHeading p,
+.governanceNote span,
+.roleDecision div > span,
+.permissionRegister > header span {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pageIdentity h1 {
+  margin: 2px 0 6px;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+}
+
+.pageIdentity div > span:last-child {
+  display: block;
+  max-width: 640px;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+.contextStamp {
+  margin: 0;
+  border-block: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: 1.15fr 0.7fr 0.6fr;
+}
+
+.contextStamp > div {
+  min-width: 0;
+  padding: var(--space-3);
+  border-inline-start: 1px solid var(--border-subtle);
+}
+
+.contextStamp > div:first-child {
+  border-inline-start: 0;
+}
+
+.contextStamp dt {
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+}
+
+.contextStamp dd {
+  margin: var(--space-1) 0 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contextStamp dd[dir="ltr"] {
+  font-family: var(--font-mono);
+  text-align: start;
+}
+
+.settingsDocument {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.3fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 64px);
+  padding-block: var(--space-8) var(--space-12);
+}
+
+.clauseIndex {
+  align-self: start;
+  position: sticky;
+  inset-block-start: 148px;
+  border-block-start: 1px solid var(--border-strong);
+}
+
+.clauseIndex > header {
+  min-height: 64px;
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.clauseIndex > header span,
+.clauseIndex > header strong {
+  font-size: var(--text-xs);
+}
+
+.clauseIndex > header span {
+  color: var(--text-tertiary);
+}
+
+.clauseIndex > header strong {
+  color: var(--tenant-accent);
+  font-family: var(--font-mono);
+}
+
+.clauseIndex > button {
+  width: 100%;
+  min-height: 74px;
+  padding: var(--space-3) 0;
+  border: 0;
+  border-block-end: 1px solid var(--border-subtle);
+  border-inline-start: 3px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  display: grid;
+  grid-template-columns: 30px 22px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  text-align: start;
+}
+
+.clauseIndex > button:hover {
+  background: var(--bg-soft);
+  color: var(--text-primary);
+}
+
+.clauseIndex > button:focus-visible,
+.documentBody:focus-visible,
+.integrationDocument :global(button:focus-visible),
+.integrationDocument :global(input:focus-visible),
+.integrationDocument :global(textarea:focus-visible) {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.clauseIndex .activeClause {
+  border-inline-start-color: var(--tenant-accent);
+  background: var(--tenant-accent-soft);
+  color: var(--text-primary);
+}
+
+.clauseNumber {
+  color: var(--text-tertiary);
+  font: 600 var(--text-xs)/1 var(--font-mono);
+}
+
+.activeClause .clauseNumber {
+  color: var(--tenant-accent);
+}
+
+.clauseCopy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.clauseCopy strong {
+  font-size: 0.8125rem;
+}
+
+.clauseCopy small {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.indexNote {
+  margin: var(--space-4) 0 0;
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+  line-height: 1.7;
+}
+
+.documentBody {
+  min-width: 0;
+  outline: none;
+}
+
+.documentHeading {
+  min-height: 130px;
+  padding-block: var(--space-3) var(--space-6);
+  border-block: 1px solid var(--border-strong);
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-4);
+}
+
+.documentIndex {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-strong);
+  display: grid;
+  place-items: center;
+  color: var(--tenant-accent);
+  font: 600 0.75rem/1 var(--font-mono);
+}
+
+.documentHeading h2 {
+  margin: 2px 0 var(--space-2);
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+}
+
+.documentHeading div > span:last-child {
+  display: block;
+  max-width: 690px;
+  color: var(--text-secondary);
+  line-height: 1.75;
+}
+
+.documentStatus {
+  padding-block-start: var(--space-1);
+}
+
+.readOnlyNotice {
+  margin: var(--space-4) 0;
+  padding: 10px var(--space-3);
+  border-inline-start: 3px solid var(--state-warning);
+  background: var(--state-warning-soft);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.8125rem;
+}
+
+.readOnlyNotice svg {
+  color: var(--state-warning);
+  flex: 0 0 auto;
+}
+
+.definitionLedger {
+  margin: var(--space-6) 0 0;
+  border-block-start: 1px solid var(--border-strong);
+}
+
+.definitionRow {
+  min-height: 72px;
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: 40px minmax(120px, 0.45fr) minmax(160px, 1fr) minmax(160px, 0.65fr);
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.rowIndex {
+  color: var(--text-tertiary);
+  font: 600 var(--text-xs)/1 var(--font-mono);
+}
+
+.definitionRow dt {
+  grid-column: 1 / span 2;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.definitionRow dt > b {
+  font-weight: 600;
+}
+
+.definitionRow dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.definitionRow dd[dir="ltr"] {
+  font-family: var(--font-mono);
+  text-align: start;
+}
+
+.definitionRow .rowSource {
+  color: var(--text-tertiary);
+  font: 500 var(--text-xs)/1.5 var(--font-mono);
+  text-align: start;
+}
+
+.colorValue {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+}
+
+.colorValue i {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xs);
+}
+
+.governanceNote {
+  margin-block-start: var(--space-8);
+  padding: var(--space-5) 0;
+  border-block: 1px solid var(--border-strong);
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.governanceNote > svg {
+  color: var(--tenant-accent);
+}
+
+.governanceNote h3 {
+  margin: 2px 0 var(--space-1);
+  font-size: 1rem;
+}
+
+.governanceNote p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+.roleDecision {
+  min-height: 116px;
+  margin-block-start: var(--space-6);
+  padding-block: var(--space-5);
+  border-block: 1px solid var(--border-strong);
+  display: grid;
+  grid-template-columns: 48px minmax(180px, 0.5fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.roleMark {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--tenant-accent-border);
+  background: var(--tenant-accent-soft);
+  color: var(--tenant-accent);
+  display: grid;
+  place-items: center;
+}
+
+.roleDecision h3 {
+  margin: 2px 0;
+  font-size: 1.2rem;
+}
+
+.roleDecision bdi {
+  color: var(--text-tertiary);
+  font: 500 var(--text-xs)/1.4 var(--font-mono);
+}
+
+.roleDecision > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+}
+
+.permissionRegister {
+  margin-block-start: var(--space-8);
+}
+
+.permissionRegister > header {
+  min-height: 68px;
+  padding-block: var(--space-3);
+  border-block: 1px solid var(--border-strong);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.permissionRegister h3 {
+  margin: 2px 0 0;
+  font-size: 1rem;
+}
+
+.permissionRegister > header small {
+  color: var(--text-tertiary);
+  font-size: var(--text-xs);
+}
+
+.permissionRegister ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.permissionRegister li {
+  min-height: 68px;
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: 38px 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.permissionIndex {
+  color: var(--text-tertiary);
+  font: 600 var(--text-xs)/1 var(--font-mono);
+}
+
+.permissionState {
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--state-success-border);
+  color: var(--state-success);
+  display: grid;
+  place-items: center;
+}
+
+.permissionRegister li > div {
+  min-width: 0;
+}
+
+.permissionRegister li strong,
+.permissionRegister li code {
+  display: block;
+}
+
+.permissionRegister li strong {
+  font-size: 0.8125rem;
+}
+
+.permissionRegister li code {
+  margin-block-start: 2px;
+  color: var(--text-tertiary);
+  font: 500 var(--text-xs)/1.4 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.permissionRegister li > b {
+  color: var(--state-success);
+  font-size: var(--text-xs);
+}
+
+/* The integration component keeps its data and security behavior. These scoped
+   rules remove the former card grid and fold it into this control document. */
+.integrationDocument :global(.xapi-settings) {
+  padding-block-start: var(--space-6);
+}
+
+.integrationDocument :global(.xapi-settings > .section-title) {
+  display: none;
+}
+
+.integrationDocument :global(.xapi-settings-intro) {
+  display: none;
+}
+
+.integrationDocument :global(.inline-feedback) {
+  border-radius: 0;
+}
+
+.integrationDocument :global(.xapi-endpoint-card) {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4) 0;
+  border: 0;
+  border-block: 1px solid var(--border-strong);
+  border-radius: 0;
+  background: transparent;
+}
+
+.integrationDocument :global(.xapi-endpoint-card span),
+.integrationDocument :global(.xapi-key-usage span) {
+  font-size: var(--text-xs);
+}
+
+.integrationDocument :global(.xapi-endpoint-card code) {
+  font-size: 0.75rem;
+}
+
+.integrationDocument :global(.xapi-key-create) {
+  margin: 0 0 var(--space-6);
+  padding-block-end: var(--space-6);
+  border-block-end: 1px solid var(--border-strong);
+}
+
+.integrationDocument :global(.xapi-key-create label) {
+  font-size: 0.75rem;
+}
+
+.integrationDocument :global(.xapi-secret-card) {
+  border-radius: 0;
+  border-inline-width: 3px;
+  border-block: 0;
+}
+
+.integrationDocument :global(.xapi-test-card) {
+  margin: 0 0 var(--space-8);
+  padding: var(--space-4) 0;
+  border: 0;
+  border-block: 1px solid var(--border-strong);
+  border-radius: 0;
+  background: transparent;
+}
+
+.integrationDocument :global(.xapi-test-copy small),
+.integrationDocument :global(.xapi-key-list-head > small),
+.integrationDocument :global(.xapi-key-name code) {
+  font-size: var(--text-xs);
+}
+
+.integrationDocument :global(.xapi-key-list) {
+  padding-block-start: var(--space-4);
+  border-block-start-color: var(--border-strong);
+}
+
+.integrationDocument :global(.xapi-key-row) {
+  min-height: 76px;
+  border-block-start-color: var(--border-subtle);
+}
+
+.integrationDocument :global(.xapi-key-row:first-of-type) {
+  border-block-start-color: var(--border-strong);
+}
+
+@media (max-width: 980px) {
+  .pageIntro {
+    grid-template-columns: 1fr;
+  }
+
+  .settingsDocument {
+    grid-template-columns: 1fr;
+  }
+
+  .clauseIndex {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    overflow-x: auto;
+    scroll-snap-type: inline mandatory;
+  }
+
+  .clauseIndex > header,
+  .indexNote {
+    display: none;
+  }
+
+  .clauseIndex > button {
+    scroll-snap-align: start;
+    border-inline-start: 1px solid var(--border-subtle);
+  }
+
+  .clauseIndex > button:first-of-type {
+    border-inline-start: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .documentHeading {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .documentStatus {
+    grid-column: 2;
+  }
+
+  .definitionRow {
+    grid-template-columns: minmax(150px, 0.55fr) minmax(0, 1fr);
+  }
+
+  .definitionRow dt {
+    grid-column: 1;
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .definitionRow .rowSource {
+    grid-column: 2;
+  }
+
+  .roleDecision {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .roleDecision > p {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 520px) {
+  .pageIdentity {
+    gap: var(--space-3);
+  }
+
+  .contextStamp {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .contextStamp > div:nth-child(3) {
+    grid-column: 1 / -1;
+    border-block-start: 1px solid var(--border-subtle);
+  }
+
+  .documentHeading {
+    min-height: 0;
+    padding-block: var(--space-4);
+  }
+
+  .definitionRow {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .definitionRow dt {
+    grid-column: 1;
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+
+  .definitionRow dd,
+  .definitionRow .rowSource {
+    grid-column: 1;
+    padding-inline-start: 40px;
+  }
+
+  .roleDecision {
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .permissionRegister > header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .permissionRegister li {
+    grid-template-columns: 28px 24px minmax(0, 1fr);
+  }
+
+  .permissionRegister li > b {
+    grid-column: 3;
+  }
+
+  .integrationDocument :global(.xapi-endpoint-card),
+  .integrationDocument :global(.xapi-key-create),
+  .integrationDocument :global(.xapi-test-card) {
+    grid-template-columns: 1fr;
+  }
+
+  .integrationDocument :global(.xapi-key-row) {
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+  }
+
+  .integrationDocument :global(.xapi-key-usage) {
+    grid-column: 2 / -1;
+  }
+
+  .integrationDocument :global(.xapi-key-row > .button) {
+    grid-column: 2 / -1;
+    width: 100%;
+  }
+}

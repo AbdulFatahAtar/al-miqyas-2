@@ -1,0 +1,373 @@
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(330px, 0.72fr) minmax(520px, 1.28fr);
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+}
+
+.aside {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 28px clamp(24px, 4vw, 56px) 34px;
+  border-inline-end: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.brand {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.brand span {
+  display: grid;
+  gap: 1px;
+}
+
+.brand strong {
+  font-size: 0.95rem;
+}
+
+.brand small,
+.recordCode,
+.asideCopy p,
+.assurance,
+.head p,
+.email small,
+.field small,
+.state p {
+  color: var(--text-secondary);
+  font-size: 0.77rem;
+  line-height: 1.75;
+}
+
+.asideCopy {
+  align-self: center;
+  padding-block: 48px;
+}
+
+.recordCode {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.recordCode::before {
+  content: "";
+  width: 30px;
+  height: 2px;
+  background: var(--tenant-accent);
+}
+
+.asideCopy h1 {
+  max-width: 520px;
+  margin: 16px 0 14px;
+  font-size: clamp(2rem, 4.5vw, 3.55rem);
+  line-height: 1.16;
+  letter-spacing: -0.04em;
+}
+
+.asideCopy p {
+  max-width: 490px;
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.9;
+}
+
+.protocol {
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+  border-block-end: 1px solid var(--border-subtle);
+}
+
+.protocol li {
+  min-height: 56px;
+  padding: 10px 0;
+  border-block-start: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.protocol i {
+  color: var(--accent-system);
+  font: 700 normal var(--text-xs) var(--font-mono);
+}
+
+.protocol strong {
+  font-size: 0.82rem;
+}
+
+.assurance {
+  padding-block-start: 18px;
+  border-block-start: 2px solid var(--text-primary);
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.assurance svg {
+  color: var(--accent-system);
+}
+
+.main {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: 76px minmax(0, 1fr);
+}
+
+.bar {
+  padding-inline: clamp(20px, 4vw, 52px);
+  border-block-end: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.sheet {
+  width: min(100% - 40px, 660px);
+  margin: auto;
+  padding-block: 42px 54px;
+}
+
+.head {
+  margin-block-end: 24px;
+  padding-block-end: 20px;
+  border-block-end: 2px solid var(--text-primary);
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.kicker::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background: var(--tenant-accent);
+}
+
+.head h2,
+.state h2 {
+  margin: 7px 0 6px;
+  font-size: clamp(1.5rem, 3vw, 2.05rem);
+  line-height: 1.3;
+}
+
+.head p,
+.state p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.email {
+  min-height: 68px;
+  padding: 10px 0;
+  border-block: 1px solid var(--border-subtle);
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 24px;
+  gap: 10px;
+  align-items: center;
+}
+
+.email > svg:first-child {
+  color: var(--accent-system);
+}
+
+.email > svg:last-child {
+  color: var(--state-success);
+}
+
+.email span {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.email strong {
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.form {
+  margin-block-start: 22px;
+  display: grid;
+  gap: 18px;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.field input {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+.field input:focus-visible,
+.button:focus-visible,
+.closeLink:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.button {
+  min-height: 48px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: var(--tenant-accent);
+  color: var(--tenant-accent-foreground);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.buttonSecondary {
+  border-color: var(--border-subtle);
+  background: var(--bg-raised);
+  color: var(--text-primary);
+}
+
+.wide {
+  width: 100%;
+}
+
+.arrow {
+  transform: scaleX(-1);
+}
+
+.error {
+  margin: 0;
+  padding: 11px 13px;
+  border-inline-start: 3px solid var(--state-danger);
+  background: var(--state-danger-soft);
+  color: var(--state-danger);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.state {
+  min-height: 360px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+}
+
+.stateIcon {
+  width: 56px;
+  height: 56px;
+  border: 1px solid currentColor;
+  display: grid;
+  place-items: center;
+  margin-block-end: 16px;
+}
+
+.checking {
+  color: var(--accent-system);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.invalid {
+  color: var(--state-danger);
+}
+
+.completed {
+  color: var(--state-success);
+}
+
+.state h2,
+.state p {
+  color: var(--text-primary);
+}
+
+.state p {
+  max-width: 520px;
+  margin-block-end: 22px;
+  color: var(--text-secondary);
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .aside {
+    display: none;
+  }
+
+  .main {
+    grid-template-rows: 68px minmax(0, 1fr);
+  }
+
+  .bar {
+    padding-inline: 12px;
+  }
+}
+
+@media (max-width: 620px) {
+  .sheet {
+    width: min(100% - 24px, 660px);
+    padding-block: 28px 40px;
+  }
+
+  .state {
+    min-height: 300px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checking {
+    animation: none;
+  }
+}
