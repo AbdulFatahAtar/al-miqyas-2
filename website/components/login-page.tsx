@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Icon } from "./icons";
 import { createSupabaseBrowserClient } from "../lib/supabase/client";
@@ -23,7 +22,6 @@ function safeNextPath(value: string | undefined) {
 }
 
 export function LoginPage({ nextPath }: { nextPath?: string }) {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -47,67 +45,10 @@ export function LoginPage({ nextPath }: { nextPath?: string }) {
         return;
       }
 
-      const [membershipResult, platformResult] = await Promise.all([
-        supabase
-          .from("memberships")
-          .select("org_id")
-          .eq("user_id", data.user.id)
-          .eq("status", "active"),
-        supabase.rpc("is_platform_admin"),
-      ]);
-      const memberships = membershipResult.data ?? [];
-      const isPlatformOwner = platformResult.data === true;
-
-      if (
-        membershipResult.error ||
-        platformResult.error ||
-        (!memberships.length && !isPlatformOwner)
-      ) {
-        await supabase.auth.signOut();
-        setErrorMessage("هذا الحساب لا يملك نطاق وصول نشطًا.");
-        return;
-      }
-
-      if (isPlatformOwner) {
-        router.replace(requestedPath ?? "/platform");
-        router.refresh();
-        return;
-      }
-
-      const { data: organizations, error: organizationsError } = await supabase
-        .from("organizations")
-        .select("id, slug, name_ar, status")
-        .in(
-          "id",
-          memberships.map((membership) => membership.org_id),
-        )
-        .eq("status", "active");
-
-      if (organizationsError || !organizations?.length) {
-        await supabase.auth.signOut();
-        setErrorMessage("تعذر التحقق من صلاحية الجهة لهذا الحساب.");
-        return;
-      }
-
-      const activeOrganization = organizations[0];
-
-      const organizationResponse = await fetch(
-        "/api/session/organization",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ organizationId: activeOrganization.id }),
-        },
-      );
-
-      if (!organizationResponse.ok) {
-        await supabase.auth.signOut();
-        setErrorMessage("تعذر تثبيت نطاق الجهة لهذا الحساب.");
-        return;
-      }
-
-      router.replace(requestedPath ?? "/dashboard");
-      router.refresh();
+      // The browser client owns the newly written auth cookie. Route through a
+      // full navigation so the server checks roles only after it receives that
+      // cookie, rather than racing a client-side RLS query with session storage.
+      window.location.assign(requestedPath ?? "/dashboard");
     } catch {
       setErrorMessage("تعذر الاتصال بخدمة الدخول. حاول مرة أخرى.");
     } finally {

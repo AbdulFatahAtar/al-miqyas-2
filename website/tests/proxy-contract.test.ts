@@ -44,6 +44,10 @@ test("login preserves only known internal destinations", () => {
   assert.match(authSource, /value\.startsWith\("\/\/"\)/);
   assert.match(authSource, /value\.includes\("\\\\"\)/);
   assert.match(authSource, /pagePermissionForPath\(value\)/);
-  assert.match(authSource, /router\.replace\(requestedPath \?\? "\/platform"\)/);
-  assert.match(authSource, /router\.replace\(requestedPath \?\? "\/dashboard"\)/);
+  assert.match(
+    authSource,
+    /window\.location\.assign\(requestedPath \?\? "\/dashboard"\)/,
+  );
+  assert.doesNotMatch(authSource, /supabase\.rpc\("is_platform_admin"\)/);
+  assert.doesNotMatch(authSource, /\.from\("memberships"\)/);
 });
