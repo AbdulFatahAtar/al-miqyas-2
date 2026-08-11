@@ -53,11 +53,16 @@ export async function sendAccessRequestInvitation({
   const invitationUrl = new URL("/accept-invitation", applicationUrl);
   invitationUrl.searchParams.set("request", context.request_id);
   invitationUrl.searchParams.set("token", token);
+  const callbackUrl = new URL("/auth/callback", applicationUrl);
+  callbackUrl.searchParams.set("next", `${invitationUrl.pathname}${invitationUrl.search}`);
 
   const { error: inviteError } = await authClient.auth.signInWithOtp({
     email: context.applicant_email,
     options: {
-      emailRedirectTo: invitationUrl.toString(),
+      // The auth callback exchanges Supabase's one-time code before the
+      // invitation page reads the session. Going directly to the page leaves
+      // an already-signed-in browser on the wrong account.
+      emailRedirectTo: callbackUrl.toString(),
       shouldCreateUser: true,
       data: {
         full_name: context.applicant_name,

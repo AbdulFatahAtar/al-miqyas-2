@@ -16,6 +16,10 @@ const invitationRouteSource = readFileSync(
   new URL("../app/api/platform/invitations/route.ts", import.meta.url),
   "utf8",
 );
+const invitationDispatchSource = readFileSync(
+  new URL("../lib/send-access-request-invitation.ts", import.meta.url),
+  "utf8",
+);
 const auditComponentSource = readFileSync(
   new URL("../components/platform-audit-log.tsx", import.meta.url),
   "utf8",
@@ -224,6 +228,19 @@ test("platform invitation route validates input, session, permission, and RPC or
   assert.match(invitationRouteSource, /error\.code === "42501" \? 403 : 409/);
   assert.match(invitationRouteSource, /sendAccessRequestInvitation/);
   assert.doesNotMatch(invitationRouteSource, /\.from\(/);
+});
+
+test("email invitations exchange their one-time auth code before loading activation", () => {
+  assert.match(
+    invitationDispatchSource,
+    /new URL\("\/auth\/callback", applicationUrl\)/,
+  );
+  assert.match(
+    invitationDispatchSource,
+    /callbackUrl\.searchParams\.set\("next", `\$\{invitationUrl\.pathname\}\$\{invitationUrl\.search\}`\)/,
+  );
+  assert.match(invitationDispatchSource, /emailRedirectTo: callbackUrl\.toString\(\)/);
+  assert.doesNotMatch(invitationDispatchSource, /emailRedirectTo: invitationUrl\.toString\(\)/);
 });
 
 test("platform audit RPC validates outcomes, severity, date ranges, and page bounds", () => {
