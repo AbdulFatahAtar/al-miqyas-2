@@ -32,6 +32,7 @@ const accessRequestRoute = read(
 const invitationAcceptance = read(
   "../app/api/access-requests/accept/route.ts",
 );
+const invitationPage = read("../components/accept-invitation-page.tsx");
 
 test("public xAPI endpoint uses a fail-closed server-only Supabase client", () => {
   assert.match(statementsRoute, /createSupabaseServiceRoleClient\(\)/);
@@ -73,6 +74,15 @@ test("invitation acceptance reports suspended-user denial explicitly", () => {
     /suspended user cannot receive an active membership/,
   );
   assert.match(invitationAcceptance, /status: suspendedUser \? 403 : 400/);
+});
+
+test("invitation activation verifies the invited session before changing a password", () => {
+  assert.ok(
+    invitationPage.indexOf('fetch("/api/access-requests/accept"') <
+      invitationPage.indexOf("supabase.auth.updateUser"),
+  );
+  assert.match(invitationPage, /state !== "password_pending"/);
+  assert.match(invitationPage, /setState\("password_pending"\)/);
 });
 
 test("Jotform webhook authenticates before parsing and uses service role", () => {

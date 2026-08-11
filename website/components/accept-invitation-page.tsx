@@ -8,7 +8,12 @@ import { Icon } from "./icons";
 import { ThemeToggle } from "./theme-toggle";
 import styles from "./accept-invitation-page.module.css";
 
-type InvitationState = "checking" | "ready" | "invalid" | "completed";
+type InvitationState =
+  | "checking"
+  | "ready"
+  | "password_pending"
+  | "invalid"
+  | "completed";
 
 export function AcceptInvitationPage({
   requestId,
@@ -93,37 +98,40 @@ export function AcceptInvitationPage({
     setIsSubmitting(true);
 
     try {
+      if (state !== "password_pending") {
+        const response = await fetch("/api/access-requests/accept", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ requestId, token }),
+        });
+        const payload = (await response.json()) as {
+          message?: string;
+          organizationSlug?: string | null;
+        };
+
+        if (!response.ok) {
+          setErrorMessage(payload.message ?? "تعذر تفعيل العضوية.");
+          return;
+        }
+
+        if (payload.organizationSlug) {
+          window.localStorage.setItem(
+            "miqyas-active-org",
+            payload.organizationSlug,
+          );
+        }
+      }
+
       const { error: passwordError } = await supabase.auth.updateUser({
         password,
       });
 
       if (passwordError) {
+        setState("password_pending");
         setErrorMessage(
-          "تعذر حفظ كلمة المرور. افتح رابط الدعوة الأصلي مرة أخرى.",
+          "فُعّلت العضوية، لكن تعذر حفظ كلمة المرور. أعد المحاولة دون فتح رابط جديد.",
         );
         return;
-      }
-
-      const response = await fetch("/api/access-requests/accept", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ requestId, token }),
-      });
-      const payload = (await response.json()) as {
-        message?: string;
-        organizationSlug?: string | null;
-      };
-
-      if (!response.ok) {
-        setErrorMessage(payload.message ?? "تعذر تفعيل العضوية.");
-        return;
-      }
-
-      if (payload.organizationSlug) {
-        window.localStorage.setItem(
-          "miqyas-active-org",
-          payload.organizationSlug,
-        );
       }
 
       setState("completed");
@@ -199,13 +207,19 @@ export function AcceptInvitationPage({
             </div>
           )}
 
-          {state === "ready" && (
+          {(state === "ready" || state === "password_pending") && (
             <>
               <header className={styles.head}>
                 <span className={styles.kicker}>الخطوة الأخيرة</span>
-                <h2>أنشئ كلمة المرور وفعّل عضويتك</h2>
+                <h2>
+                  {state === "password_pending"
+                    ? "احفظ كلمة المرور لإكمال الدخول"
+                    : "أنشئ كلمة المرور وفعّل عضويتك"}
+                </h2>
                 <p>
-                  الدعوة مرتبطة بالبريد التالي ولا يمكن نقلها إلى حساب آخر.
+                  {state === "password_pending"
+                    ? "العضوية مفعّلة بالفعل لهذا البريد."
+                    : "الدعوة مرتبطة بالبريد التالي ولا يمكن نقلها إلى حساب آخر."}
                 </p>
               </header>
 
@@ -260,7 +274,9 @@ export function AcceptInvitationPage({
                 >
                   {isSubmitting
                     ? "جارٍ تفعيل العضوية..."
-                    : <>
+                    : state === "password_pending"
+                      ? "حفظ كلمة المرور"
+                      : <>
                         تفعيل العضوية
                         <span className={styles.arrow}><Icon name="arrow" size={17} /></span>
                       </>}
