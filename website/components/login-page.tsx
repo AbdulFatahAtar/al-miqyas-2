@@ -21,7 +21,15 @@ function safeNextPath(value: string | undefined) {
   return pagePermissionForPath(value) ? value : null;
 }
 
-export function LoginPage({ nextPath }: { nextPath?: string }) {
+export function LoginPage({
+  nextPath,
+  passwordUpdated = false,
+  authLinkFailed = false,
+}: {
+  nextPath?: string;
+  passwordUpdated?: boolean;
+  authLinkFailed?: boolean;
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -62,6 +70,17 @@ export function LoginPage({ nextPath }: { nextPath?: string }) {
       description="استخدم بريد الحساب وكلمة المرور التي أنشأتها في المنصة."
     >
       <form className={styles.form} onSubmit={submitLogin}>
+        {passwordUpdated && (
+          <p className={styles.successMessage} role="status">
+            <Icon name="check" size={18} />
+            تم تغيير كلمة المرور. استخدم الكلمة الجديدة لتسجيل الدخول.
+          </p>
+        )}
+        {authLinkFailed && (
+          <p className={styles.error} role="alert">
+            تعذر فتح رابط المصادقة أو انتهت صلاحيته. اطلب رابطًا جديدًا.
+          </p>
+        )}
         <label className={styles.field} htmlFor="login-email">
           البريد الإلكتروني
           <span className={styles.inputWithIcon}>
@@ -77,8 +96,11 @@ export function LoginPage({ nextPath }: { nextPath?: string }) {
             />
           </span>
         </label>
-        <label className={styles.field} htmlFor="login-password">
-          كلمة المرور
+        <div className={styles.field}>
+          <div className={styles.fieldLabelRow}>
+            <label htmlFor="login-password">كلمة المرور</label>
+            <Link href="/forgot-password">نسيت كلمة المرور؟</Link>
+          </div>
           <input
             id="login-password"
             required
@@ -88,7 +110,7 @@ export function LoginPage({ nextPath }: { nextPath?: string }) {
             autoComplete="current-password"
             dir="ltr"
           />
-        </label>
+        </div>
         {errorMessage && <p className={styles.error} role="alert">{errorMessage}</p>}
         <button
           className={`${styles.button} ${styles.buttonWide}`}

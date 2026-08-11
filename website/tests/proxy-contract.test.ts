@@ -35,11 +35,15 @@ test("public API and verification paths remain explicitly public", () => {
   assert.match(proxySource, /pathname === "\/verify"/);
   assert.match(proxySource, /pathname\.startsWith\("\/verify\/"\)/);
   assert.match(proxySource, /pathname\.startsWith\("\/t\/"\)/);
+  assert.match(proxySource, /"\/forgot-password"/);
 });
 
 test("login preserves only known internal destinations", () => {
-  assert.match(loginRouteSource, /searchParams: Promise<\{ next\?: string \}>/);
-  assert.match(loginRouteSource, /<LoginPage nextPath=\{next\}/);
+  assert.match(
+    loginRouteSource,
+    /searchParams: Promise<\{ next\?: string; reset\?: string; error\?: string \}>/,
+  );
+  assert.match(loginRouteSource, /<LoginPage\s+nextPath=\{next\}/);
   assert.match(authSource, /!value\.startsWith\("\/"\)/);
   assert.match(authSource, /value\.startsWith\("\/\/"\)/);
   assert.match(authSource, /value\.includes\("\\\\"\)/);

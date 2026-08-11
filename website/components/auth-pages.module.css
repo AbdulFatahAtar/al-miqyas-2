@@ -247,6 +247,19 @@
   opacity: 0.85;
 }
 
+.fieldLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fieldLabelRow a {
+  color: var(--text-link);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
 .inputWithIcon {
   position: relative;
 }
@@ -310,6 +323,19 @@
   border-inline-start: 3px solid var(--state-danger);
   background: var(--state-danger-soft);
   color: var(--state-danger);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.successMessage {
+  margin: 0;
+  padding: 11px 13px;
+  border-inline-start: 3px solid var(--state-success);
+  background: var(--state-success-soft);
+  color: var(--state-success);
+  display: flex;
+  align-items: center;
+  gap: 9px;
   font-size: 0.8rem;
   line-height: 1.7;
 }

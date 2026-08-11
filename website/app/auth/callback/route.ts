@@ -6,11 +6,18 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const next = safeInternalPath(requestUrl.searchParams.get("next"));
+  let exchangeFailed = !code;
 
   if (code) {
     const supabase = await createSupabaseServerClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    exchangeFailed = Boolean(error);
   }
 
-  return NextResponse.redirect(new URL(next, requestUrl.origin));
+  const destination = exchangeFailed ? "/login?error=auth_callback" : next;
+  const response = NextResponse.redirect(
+    new URL(destination, requestUrl.origin),
+  );
+  response.headers.set("Cache-Control", "private, no-store");
+  return response;
 }
