@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/integrations/jotform/reconcile",
+      "schedule": "0 * * * *"
+    }
+  ]
+}

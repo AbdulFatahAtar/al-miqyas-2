@@ -18,6 +18,12 @@ const certificates = read("../components/certificates-live-page.tsx");
 const jotformRoute = read(
   "../app/api/integrations/jotform/webhook/route.ts",
 );
+const jotformReconciliationRoute = read(
+  "../app/api/integrations/jotform/reconcile/route.ts",
+);
+const jotformReconciliationScript = read(
+  "../scripts/reconcile-jotform-submission.mjs",
+);
 const jotformLibrary = read("../lib/jotform.ts");
 const traineeRoute = read(
   "../app/api/public/trainees/[traineeCode]/route.ts",
@@ -101,6 +107,28 @@ test("Jotform webhook authenticates before parsing and uses service role", () =>
   assert.match(jotformRoute, /rawBody\.byteLength > maximumWebhookBytes/);
   assert.match(jotformRoute, /parseJotformWebhook\(boundedRequest\)/);
   assert.match(environmentExample, /^JOTFORM_WEBHOOK_SECRET=$/m);
+});
+
+test("Jotform reconciliation is cron-protected and preserves its ingestion channel", () => {
+  assert.match(jotformReconciliationRoute, /process\.env\.CRON_SECRET/);
+  assert.match(jotformReconciliationRoute, /timingSafeEqual/);
+  assert.match(jotformReconciliationRoute, /process\.env\.JOTFORM_API_KEY/);
+  assert.match(jotformReconciliationRoute, /parseJotformWebhook/);
+  assert.match(jotformReconciliationRoute, /target_channel:\s*"reconciliation"/);
+  assert.match(
+    jotformReconciliationRoute,
+    /record_integration_processing_failure/,
+  );
+  assert.match(jotformReconciliationRoute, /skippedKnown/);
+  assert.match(environmentExample, /^CRON_SECRET=$/m);
+  assert.match(
+    jotformReconciliationScript,
+    /X-Miqyas-Webhook-Secret": env\.JOTFORM_WEBHOOK_SECRET/,
+  );
+  assert.match(
+    jotformReconciliationScript,
+    /RECONCILIATION_APPLICATION_URL/,
+  );
 });
 
 test("public trainee lookup is server-rate-limited and never returns certificate codes", () => {

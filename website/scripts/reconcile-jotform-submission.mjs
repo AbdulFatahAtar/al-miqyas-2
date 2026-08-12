@@ -68,8 +68,10 @@ async function main() {
   }
 
   const env = parseEnvFile(await readFile(envPath, "utf8"));
-  if (!env.JOTFORM_API_KEY) {
-    throw new Error("JOTFORM_API_KEY is missing from .env.local.");
+  if (!env.JOTFORM_API_KEY || !env.JOTFORM_WEBHOOK_SECRET) {
+    throw new Error(
+      "JOTFORM_API_KEY or JOTFORM_WEBHOOK_SECRET is missing from .env.local.",
+    );
   }
 
   const submissions = normalizeRows(
@@ -89,7 +91,9 @@ async function main() {
   }
 
   const applicationUrl = (
-    env.LOCAL_RECONCILIATION_URL ?? "http://127.0.0.1:3000"
+    env.RECONCILIATION_APPLICATION_URL ??
+    env.NEXT_PUBLIC_APP_URL ??
+    "http://127.0.0.1:3000"
   ).replace(/\/+$/u, "");
   const rawRequest = {
     formID: String(submission.form_id ?? formId),
@@ -101,7 +105,10 @@ async function main() {
     `${applicationUrl}/api/integrations/jotform/webhook`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Miqyas-Webhook-Secret": env.JOTFORM_WEBHOOK_SECRET,
+      },
       body: JSON.stringify({
         formID: rawRequest.formID,
         submissionID: rawRequest.submissionID,
