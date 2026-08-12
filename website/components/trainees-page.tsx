@@ -413,7 +413,18 @@ export function TraineesPage({
               <span>السجل أ</span>
               <h2 id="trainees-ledger-title">دليل المتدرّبين</h2>
             </div>
-            <strong>{isLoading ? "جارٍ الفهرسة" : `${filtered.length} نتيجة`}</strong>
+            <div>
+              {canManage && cohorts.length > 0 && (
+                <button
+                  className="button button-primary"
+                  onClick={openCreateModal}
+                >
+                  <Icon name="plus" size={16} />
+                  تسجيل متدرّب
+                </button>
+              )}
+              <strong>{isLoading ? "جارٍ الفهرسة" : `${filtered.length} نتيجة`}</strong>
+            </div>
           </div>
 
           <div className={styles.toolbar}>
