@@ -24,6 +24,9 @@ const jotformReconciliationRoute = read(
 const jotformReconciliationScript = read(
   "../scripts/reconcile-jotform-submission.mjs",
 );
+const jotformReconciliationWorkflow = read(
+  "../../.github/workflows/jotform-reconciliation.yml",
+);
 const jotformLibrary = read("../lib/jotform.ts");
 const traineeRoute = read(
   "../app/api/public/trainees/[traineeCode]/route.ts",
@@ -109,7 +112,7 @@ test("Jotform webhook authenticates before parsing and uses service role", () =>
   assert.match(environmentExample, /^JOTFORM_WEBHOOK_SECRET=$/m);
 });
 
-test("Jotform reconciliation is cron-protected and preserves its ingestion channel", () => {
+test("Jotform reconciliation is scheduler-protected and preserves its ingestion channel", () => {
   assert.match(jotformReconciliationRoute, /process\.env\.CRON_SECRET/);
   assert.match(jotformReconciliationRoute, /timingSafeEqual/);
   assert.match(jotformReconciliationRoute, /process\.env\.JOTFORM_API_KEY/);
@@ -129,6 +132,13 @@ test("Jotform reconciliation is cron-protected and preserves its ingestion chann
     jotformReconciliationScript,
     /RECONCILIATION_APPLICATION_URL/,
   );
+  assert.match(jotformReconciliationWorkflow, /cron: "17 \* \* \* \*"/);
+  assert.match(jotformReconciliationWorkflow, /secrets\.CRON_SECRET/);
+  assert.match(
+    jotformReconciliationWorkflow,
+    /https:\/\/al-miqyas\.vercel\.app\/api\/integrations\/jotform\/reconcile/,
+  );
+  assert.match(jotformReconciliationWorkflow, /Authorization: Bearer \$CRON_SECRET/);
 });
 
 test("public trainee lookup is server-rate-limited and never returns certificate codes", () => {

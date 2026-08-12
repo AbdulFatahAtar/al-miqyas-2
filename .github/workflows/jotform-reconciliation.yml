@@ -1,0 +1,34 @@
+name: Jotform reconciliation
+
+on:
+  schedule:
+    # Offset from the top of the hour to reduce scheduled-workflow congestion.
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jotform-reconciliation
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    name: Recover missed Jotform submissions
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Request reconciliation from production
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          RECONCILIATION_URL: https://al-miqyas.vercel.app/api/integrations/jotform/reconcile
+        run: |
+          test -n "$CRON_SECRET"
+          test -n "$RECONCILIATION_URL"
+          curl --fail-with-body --silent --show-error \
+            --retry 2 --retry-all-errors --connect-timeout 10 --max-time 70 \
+            --request POST \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            --header "Accept: application/json" \
+            "$RECONCILIATION_URL"
