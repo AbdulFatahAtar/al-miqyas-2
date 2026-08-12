@@ -22,6 +22,32 @@ type ProcessingResult = {
   confidence_mean: number | null;
 };
 
+async function recordWebhookProcessingFailure(
+  supabase: ReturnType<typeof createSupabaseServiceRoleClient>,
+  submission: {
+    formId: string;
+    submissionId: string;
+    payload: Record<string, unknown>;
+  },
+  reason: string,
+) {
+  const { error } = await supabase.rpc(
+    "record_integration_processing_failure",
+    {
+      target_provider: "jotform",
+      target_channel: "webhook",
+      target_external_event_id: submission.submissionId,
+      target_form_id: submission.formId,
+      target_payload: submission.payload,
+      target_error: reason,
+    },
+  );
+
+  if (error) {
+    console.error("Unable to record Jotform webhook failure.", error);
+  }
+}
+
 export async function POST(request: Request) {
   const authorization = authorizeJotformWebhook(request);
   if (authorization !== "authorized") {
@@ -131,6 +157,8 @@ export async function POST(request: Request) {
         error.message.includes("Invalid Jotform") ||
         error.message.includes("configuration"));
 
+    await recordWebhookProcessingFailure(supabase, submission, error.message);
+
     return NextResponse.json(
       {
         status: isRejectedSubmission ? "rejected" : "failed",
@@ -150,6 +178,12 @@ export async function POST(request: Request) {
   );
 
   if (!result) {
+    await recordWebhookProcessingFailure(
+      supabase,
+      submission,
+      "Jotform processing returned no result.",
+    );
+
     return NextResponse.json(
       { status: "failed", message: "Processing returned no result." },
       { status: 503 },

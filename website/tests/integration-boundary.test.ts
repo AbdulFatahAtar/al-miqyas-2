@@ -109,6 +109,9 @@ test("Jotform webhook authenticates before parsing and uses service role", () =>
   );
   assert.match(jotformRoute, /rawBody\.byteLength > maximumWebhookBytes/);
   assert.match(jotformRoute, /parseJotformWebhook\(boundedRequest\)/);
+  assert.match(jotformRoute, /recordWebhookProcessingFailure/);
+  assert.match(jotformRoute, /target_channel:\s*"webhook"/);
+  assert.match(jotformRoute, /record_integration_processing_failure/);
   assert.match(environmentExample, /^JOTFORM_WEBHOOK_SECRET=$/m);
 });
 
