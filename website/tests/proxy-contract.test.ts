@@ -32,6 +32,10 @@ test("protected API requests fail with JSON instead of a login redirect", () => 
 
 test("public API and verification paths remain explicitly public", () => {
   assert.match(proxySource, /pathname\.startsWith\("\/api\/public\/"\)/);
+  assert.match(
+    proxySource,
+    /pathname === "\/api\/integrations\/jotform\/reconcile"/,
+  );
   assert.match(proxySource, /pathname === "\/verify"/);
   assert.match(proxySource, /pathname\.startsWith\("\/verify\/"\)/);
   assert.match(proxySource, /pathname\.startsWith\("\/t\/"\)/);

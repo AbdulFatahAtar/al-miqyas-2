@@ -8,6 +8,7 @@ function isPublicPath(pathname: string) {
     publicPaths.includes(pathname) ||
     pathname.startsWith("/api/public/") ||
     pathname === "/api/integrations/jotform/webhook" ||
+    pathname === "/api/integrations/jotform/reconcile" ||
     pathname === "/api/integrations/xapi/statements" ||
     pathname === "/accept-invitation" ||
     pathname === "/auth/callback" ||
