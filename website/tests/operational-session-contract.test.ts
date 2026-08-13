@@ -25,6 +25,9 @@ const publicRoute = read("../app/api/public/sessions/[token]/route.ts");
 const tokenLibrary = read("../lib/operational-sessions.ts");
 const joinPage = read("../components/operational-session-join-page.tsx");
 const journeyPage = read("../components/operational-session-journey-page.tsx");
+const externalTab = read("../lib/browser/external-tab.ts");
+const traineeRoutePage = read("../components/trainee-routing-page.tsx");
+const traineeDetailsPage = read("../components/trainee-details-page.tsx");
 const panel = read("../components/operational-sessions-panel.tsx");
 const proxy = read("../proxy.ts");
 const accessProvider = read("../components/access-provider.tsx");
@@ -162,6 +165,15 @@ test("participant journey credentials are hashed, expiring, and stored in an Htt
   assert.match(journeyPage, /document\.visibilityState !== "visible"/);
   assert.match(journeyPage, /window\.setInterval\(refresh, 10_000\)/);
   assert.match(journeyPage, /journey\.live_event_count === 0/);
+  assert.match(journeyPage, /openExternalTabPlaceholder\(\)/);
+  assert.match(journeyPage, /navigateExternalTab\(externalTab, payload\.url\)/);
+  assert.match(externalTab, /window\.open\("about:blank", "_blank"\)/);
+  assert.match(externalTab, /externalTab\.opener = null/);
+  assert.match(externalTab, /externalTab\.location\.replace/);
+  assert.match(traineeRoutePage, /navigateExternalTab\(externalTab, result\.url\)/);
+  assert.match(traineeDetailsPage, /navigateExternalTab\(externalTab, result\.url\)/);
+  assert.doesNotMatch(traineeRoutePage, /window\.location\.assign\(result\.url\)/);
+  assert.doesNotMatch(traineeDetailsPage, /window\.location\.assign\(result\.url\)/);
   assert.match(assessmentLinkRoute, /Journey assessment link creation failed/);
 });
 

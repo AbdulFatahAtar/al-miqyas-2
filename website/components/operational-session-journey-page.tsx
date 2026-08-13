@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "./icons";
 import { ThemeToggle } from "./theme-toggle";
+import { navigateExternalTab, openExternalTabPlaceholder } from "../lib/browser/external-tab";
 import styles from "./operational-session-journey-page.module.css";
 
 type Journey = {
@@ -63,7 +64,14 @@ export function OperationalSessionJourneyPage() {
   }, [journey, loadJourney]);
 
   async function openAssessment(kind: "pre" | "post") {
-    setIsOpening(true); setError("");
+    const externalTab = openExternalTabPlaceholder();
+    if (!externalTab) {
+      setError("المتصفح منع فتح التبويب الجديد. اسمح بالنوافذ المنبثقة ثم حاول مجددًا.");
+      return;
+    }
+
+    setIsOpening(true);
+    setError("");
     try {
       const response = await fetch("/api/public/session-journey/assessment-link", {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -71,9 +79,11 @@ export function OperationalSessionJourneyPage() {
       });
       const payload = (await response.json()) as { url?: string; message?: string };
       if (!response.ok || !payload.url) throw new Error(payload.message ?? "تعذر فتح القياس.");
-      window.location.assign(payload.url);
+      navigateExternalTab(externalTab, payload.url);
     } catch (caught) {
+      externalTab.close();
       setError(caught instanceof Error ? caught.message : "تعذر فتح القياس.");
+    } finally {
       setIsOpening(false);
     }
   }

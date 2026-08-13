@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { Icon } from "./icons";
 import { ThemeToggle } from "./theme-toggle";
+import { navigateExternalTab, openExternalTabPlaceholder } from "../lib/browser/external-tab";
 import styles from "./public-evidence.module.css";
 
 type PublicRouteData = {
@@ -170,6 +171,12 @@ export function TraineeRoutingPage({
   }, [data]);
 
   const openAssessment = async (assessmentKind: "pre" | "post") => {
+    const externalTab = openExternalTabPlaceholder();
+    if (!externalTab) {
+      setActionErrorMessage("المتصفح منع فتح التبويب الجديد. اسمح بالنوافذ المنبثقة ثم حاول مجددًا.");
+      return;
+    }
+
     setIsOpeningAssessment(true);
     setActionErrorMessage("");
 
@@ -188,14 +195,16 @@ export function TraineeRoutingPage({
       };
 
       if (!response.ok || !result.url) {
+        externalTab.close();
         setActionErrorMessage(
           result.message ?? "تعذر فتح القياس الآن.",
         );
         return;
       }
 
-      window.location.assign(result.url);
+      navigateExternalTab(externalTab, result.url);
     } catch {
+      externalTab.close();
       setActionErrorMessage(
         "تعذر إنشاء الرابط الآمن. تحقق من الاتصال وحاول مجددًا.",
       );

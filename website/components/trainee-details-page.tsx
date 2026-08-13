@@ -6,6 +6,7 @@ import QRCode from "qrcode";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AppShell, StatusBadge } from "./app-shell";
 import { Icon } from "./icons";
+import { navigateExternalTab, openExternalTabPlaceholder } from "../lib/browser/external-tab";
 import { createSupabaseBrowserClient } from "../lib/supabase/client";
 import {
   isXapiTestEvent,
@@ -344,6 +345,12 @@ export function TraineeDetailsPage({
   const openAssessmentPreview = async (
     assessmentKind: "pre" | "post",
   ) => {
+    const externalTab = openExternalTabPlaceholder();
+    if (!externalTab) {
+      setPreviewError("المتصفح منع فتح التبويب الجديد. اسمح بالنوافذ المنبثقة ثم حاول مجددًا.");
+      return;
+    }
+
     setPreviewKind(assessmentKind);
     setPreviewError("");
 
@@ -362,14 +369,16 @@ export function TraineeDetailsPage({
       };
 
       if (!response.ok || !result.url) {
+        externalTab.close();
         setPreviewError(
           result.message ?? "تعذر إنشاء رابط المعاينة.",
         );
         return;
       }
 
-      window.location.assign(result.url);
+      navigateExternalTab(externalTab, result.url);
     } catch {
+      externalTab.close();
       setPreviewError(
         "تعذر الاتصال بخدمة المعاينة. حاول مرة أخرى.",
       );
