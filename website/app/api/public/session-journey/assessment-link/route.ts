@@ -53,6 +53,12 @@ export async function POST(request: Request) {
   });
   const link = error ? null : firstRpcRow<LinkResult>(data as LinkResult[]);
   if (!link) {
+    if (error) {
+      console.error("Journey assessment link creation failed.", {
+        code: error.code,
+        message: error.message,
+      });
+    }
     return NextResponse.json({ message: "هذا القياس غير متاح الآن أو أُنجز مسبقًا." }, { status: 409 });
   }
 

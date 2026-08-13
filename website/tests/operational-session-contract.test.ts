@@ -16,6 +16,9 @@ const joinConflictMigration = read(
 const selfRegistrationMigration = read(
   "../supabase/migrations/202608130037_session_self_registration_journey.sql",
 );
+const draftAssessmentTokenMigration = read(
+  "../supabase/migrations/202608130038_allow_draft_session_assessment_tokens.sql",
+);
 const sessionRoute = read("../app/api/sessions/route.ts");
 const actionRoute = read("../app/api/sessions/[sessionId]/actions/route.ts");
 const publicRoute = read("../app/api/public/sessions/[token]/route.ts");
@@ -148,6 +151,9 @@ test("live sessions can explicitly allow atomic self-registration without an Aut
 test("participant journey credentials are hashed, expiring, and stored in an HttpOnly cookie", () => {
   const registerRoute = read("../app/api/public/sessions/[token]/register/route.ts");
   const journeyRoute = read("../app/api/public/session-journey/route.ts");
+  const assessmentLinkRoute = read(
+    "../app/api/public/session-journey/assessment-link/route.ts",
+  );
   assert.match(selfRegistrationMigration, /token_hash text not null unique/);
   assert.match(selfRegistrationMigration, /expires_at timestamptz not null/);
   assert.match(registerRoute, /httpOnly: true/);
@@ -156,4 +162,18 @@ test("participant journey credentials are hashed, expiring, and stored in an Htt
   assert.match(journeyPage, /document\.visibilityState !== "visible"/);
   assert.match(journeyPage, /window\.setInterval\(refresh, 10_000\)/);
   assert.match(journeyPage, /journey\.live_event_count === 0/);
+  assert.match(assessmentLinkRoute, /Journey assessment link creation failed/);
+});
+
+test("session assessment links issue tokens for pilot cohorts that remain in draft", () => {
+  assert.match(
+    draftAssessmentTokenMigration,
+    /create_assessment_submission_token\(uuid, text, interval\)/,
+  );
+  assert.match(
+    draftAssessmentTokenMigration,
+    /cohort\.status in \('draft', 'open', 'in_progress'\)/,
+  );
+  assert.match(draftAssessmentTokenMigration, /pg_get_functiondef/);
+  assert.match(draftAssessmentTokenMigration, /Unable to patch assessment token eligibility/);
 });
