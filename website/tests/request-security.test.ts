@@ -14,6 +14,8 @@ const protectedMutationRoutes = [
   "../app/api/integrations/xapi/keys/[keyId]/route.ts",
   "../app/api/integrations/xapi/test/route.ts",
   "../app/api/platform/invitations/route.ts",
+  "../app/api/sessions/route.ts",
+  "../app/api/sessions/[sessionId]/actions/route.ts",
   "../app/api/session/organization/route.ts",
 ] as const;
 

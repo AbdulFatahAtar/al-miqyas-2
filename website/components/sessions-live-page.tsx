@@ -14,6 +14,7 @@ import {
   xapiVerbLabel,
 } from "../lib/xapi-display";
 import styles from "./sessions-live-page.module.css";
+import { OperationalSessionsPanel } from "./operational-sessions-panel";
 
 type EnrollmentLookup = {
   id: string;
@@ -279,6 +280,8 @@ export function SessionsLivePage({ organizationId }: { organizationId: string })
           </button>
         </div>
       </header>
+
+      <OperationalSessionsPanel organizationId={organizationId} />
 
       <dl className={styles.operationLedger} aria-label="ملخص آخر 300 حدث مستلم">
         <OperationMetric

@@ -1,0 +1,52 @@
+.page { min-height: 100vh; min-height: 100dvh; background: var(--bg-canvas); }
+.masthead { min-height: 76px; border-block-end: 1px solid var(--border-subtle); background: var(--bg-surface); }
+.mastheadInner { width: min(100% - 32px, 1100px); min-height: inherit; margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 11px; }
+.brand img { width: 40px; height: 40px; object-fit: contain; }
+.brand span { display: grid; line-height: 1.4; }
+.brand small, .actions a, .eyebrow, .station small, .station span, .protocol small, .note { color: var(--text-secondary); font-size: .75rem; }
+.actions { display: flex; align-items: center; gap: 12px; }
+.actions a { min-height: 44px; display: inline-flex; align-items: center; padding: 8px; font-weight: 600; }
+.document { width: min(100% - 32px, 1100px); margin-inline: auto; padding-block: 40px 56px; }
+.documentHead { padding-block-end: 20px; border-block-end: 2px solid var(--text-primary); display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 24px; align-items: end; }
+.eyebrow { display: inline-flex; gap: 8px; align-items: center; font-weight: 700; }
+.eyebrow::before { content: ""; width: 28px; height: 2px; background: var(--tenant-accent); }
+.documentHead h1 { margin: 7px 0; font-size: clamp(1.8rem, 5vw, 3.3rem); line-height: 1.15; }
+.documentHead p, .formPanel > p, .state p { margin: 0; color: var(--text-secondary); line-height: 1.75; }
+.station { min-width: 180px; padding-inline-start: 22px; border-inline-start: 1px solid var(--border-subtle); display: grid; gap: 3px; }
+.station strong { font: 700 1.15rem/1.4 var(--font-mono); }
+.joinGrid { display: grid; grid-template-columns: minmax(0,.8fr) minmax(420px,1.2fr); border-block-end: 1px solid var(--border-subtle); }
+.protocol { padding: 34px 0 34px 34px; border-inline-end: 1px solid var(--border-subtle); }
+.protocol h2, .formPanel h2, .state h2 { margin: 10px 0 18px; font-size: 1.25rem; }
+.protocol ol { margin: 0; padding: 0; list-style: none; }
+.protocol li { min-height: 76px; padding-block: 14px; border-block-start: 1px solid var(--border-subtle); display: grid; grid-template-columns: 42px 1fr; gap: 12px; }
+.protocol li > b { color: var(--accent-system); font: 700 .78rem/1.7 var(--font-mono); }
+.protocol li span { display: grid; gap: 2px; }
+.expiry { margin: 20px 0 0; padding: 12px; border-inline-start: 3px solid var(--state-warning); background: var(--state-warning-soft); color: var(--text-secondary); font-size: .82rem; }
+.formPanel { padding: 34px 40px 38px; background: var(--bg-surface); }
+.formPanel form { margin-block-start: 24px; display: grid; gap: 11px; }
+.formPanel label { color: var(--text-secondary); font-size: .8rem; font-weight: 600; }
+.formPanel input { width: 100%; min-height: 54px; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg-canvas); color: var(--text-primary); font-family: var(--font-mono); }
+.formPanel button { min-height: 48px; margin-block-start: 8px; border: 0; border-radius: var(--radius-sm); background: var(--tenant-accent); color: var(--tenant-accent-foreground); display: inline-flex; justify-content: center; align-items: center; gap: 9px; font-weight: 700; cursor: pointer; }
+.formPanel button:disabled { opacity: .6; cursor: wait; }
+.error { margin: 4px 0 0; padding: 10px 12px; border-inline-start: 3px solid var(--state-danger); background: var(--state-danger-soft); color: var(--state-danger); font-size: .82rem; }
+.note { margin: 18px 0 0; padding-block-start: 14px; border-block-start: 1px solid var(--border-subtle); line-height: 1.7; }
+.state { min-height: 300px; padding: 56px 0; border-block-end: 1px solid var(--border-subtle); display: grid; grid-template-columns: 52px minmax(0,1fr); gap: 18px; align-items: center; }
+.state > svg { width: 48px; height: 48px; padding: 11px; border: 1px solid currentColor; color: var(--accent-system); }
+.success > svg { color: var(--state-success); }
+.failed > svg { color: var(--state-danger); }
+.context { margin: 24px 0 0; border-block: 1px solid var(--border-subtle); }
+.context > div { padding: 12px 0; display: grid; grid-template-columns: 180px minmax(0,1fr); gap: 12px; border-block-start: 1px solid var(--border-subtle); }
+.context > div:first-child { border-block-start: 0; }
+.context dt { color: var(--text-secondary); font-size: .8rem; }
+.context dd { margin: 0; overflow-wrap: anywhere; font: 600 .82rem/1.6 var(--font-mono); }
+@media (max-width: 760px) {
+  .document { padding-block-start: 28px; }
+  .documentHead { grid-template-columns: 1fr; }
+  .station { padding: 12px 0 0; border-inline-start: 0; border-block-start: 1px solid var(--border-subtle); }
+  .joinGrid { grid-template-columns: 1fr; }
+  .protocol { padding: 28px 0; border-inline-end: 0; }
+  .formPanel { margin-inline: -16px; padding: 28px 16px 32px; }
+  .context > div { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (max-width: 520px) { .actions a { display: none; } .brand small { display: none; } }
