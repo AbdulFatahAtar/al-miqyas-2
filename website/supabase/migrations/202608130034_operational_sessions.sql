@@ -842,7 +842,7 @@ begin
     target_enrollment.id,
     matched_method
   )
-  on conflict (session_id, enrollment_id) do nothing
+  on conflict on constraint operational_session_attendances_session_id_enrollment_id_key do nothing
   returning * into saved_attendance;
 
   if saved_attendance.id is not null then

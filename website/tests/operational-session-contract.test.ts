@@ -10,6 +10,9 @@ const migration = read("../supabase/migrations/202608130034_operational_sessions
 const draftEligibilityMigration = read(
   "../supabase/migrations/202608130035_allow_draft_operational_sessions.sql",
 );
+const joinConflictMigration = read(
+  "../supabase/migrations/202608130036_fix_operational_session_join_conflict.sql",
+);
 const sessionRoute = read("../app/api/sessions/route.ts");
 const actionRoute = read("../app/api/sessions/[sessionId]/actions/route.ts");
 const publicRoute = read("../app/api/public/sessions/[token]/route.ts");
@@ -52,6 +55,10 @@ test("public join requires independent trainee identity and active cohort enroll
   assert.match(migration, /enrollment\.status = 'active'/);
   assert.match(migration, /'operational_session\.scanned'/);
   assert.match(migration, /'operational_session\.joined'/);
+  assert.match(
+    migration,
+    /on conflict on constraint operational_session_attendances_session_id_enrollment_id_key do nothing/,
+  );
   assert.doesNotMatch(migration, /metadata[\s\S]{0,200}target_identity_value/);
   assert.match(joinPage, /البريد الإلكتروني أو رقم الجوال المسجل/);
   assert.match(joinPage, /رمز الجلسة لا يثبت هوية المتدرّب/);
@@ -107,4 +114,12 @@ test("pilot draft programs and cohorts can create repeated operational sessions"
   );
   assert.match(panel, /\.in\("status", \["draft", "active"\]\)/);
   assert.match(panel, /\.in\("status", \["draft", "open", "in_progress"\]\)/);
+});
+
+test("public attendance join uses an unambiguous conflict target", () => {
+  assert.match(
+    joinConflictMigration,
+    /on conflict on constraint operational_session_attendances_session_id_enrollment_id_key do nothing/,
+  );
+  assert.match(joinConflictMigration, /pg_get_functiondef/);
 });
