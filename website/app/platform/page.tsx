@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AppShell, StatusBadge } from "../../components/app-shell";
+import { AccessRequestsPanel } from "../../components/access-requests-panel";
 import {
   PlatformAuditLog,
   type PlatformAuditEventRecord,
@@ -368,6 +369,17 @@ export default async function PlatformPage() {
           status: organization.status,
         }))}
       />
+
+      <div className={styles.sectionGap}>
+        <AccessRequestsPanel
+          initialFilter="invitations"
+          organizations={organizations.map((organization) => ({
+            id: organization.id,
+            name_ar: organization.name_ar,
+            brand_color: organization.brand_color,
+          }))}
+        />
+      </div>
     </AppShell>
   );
 }

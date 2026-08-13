@@ -230,6 +230,12 @@ test("platform invitation route validates input, session, permission, and RPC or
   assert.doesNotMatch(invitationRouteSource, /\.from\(/);
 });
 
+test("platform console exposes pending invitations and resend controls", () => {
+  assert.match(platformPageSource, /import \{ AccessRequestsPanel \}/);
+  assert.match(platformPageSource, /<AccessRequestsPanel/);
+  assert.match(platformPageSource, /initialFilter="invitations"/);
+});
+
 test("email invitations exchange their one-time auth code before loading activation", () => {
   assert.match(
     invitationDispatchSource,

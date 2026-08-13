@@ -29,7 +29,7 @@ type AccessRequestRecord = {
   org_id: string;
   full_name: string;
   email: string;
-  requested_role: "trainer" | "viewer";
+  requested_role: "owner" | "trainer" | "viewer";
   status: AccessRequestStatus;
   review_note: string | null;
   submitted_at: string;
@@ -92,7 +92,8 @@ function requestStatus(status: AccessRequestStatus): {
 }
 
 function roleLabel(role: AccessRequestRecord["requested_role"]) {
-  return role === "trainer" ? "مدرّب" : "مراجع نتائج";
+  if (role === "owner") return "مالك الجهة";
+  return role === "trainer" ? "مدرّب" : "قارئ";
 }
 
 function isInFilter(request: AccessRequestRecord, filter: RequestFilter) {
@@ -118,13 +119,15 @@ function isInFilter(request: AccessRequestRecord, filter: RequestFilter) {
 export function AccessRequestsPanel({
   organizations,
   onPendingCountChange,
+  initialFilter = "pending",
 }: {
   organizations: OrganizationOption[];
   onPendingCountChange?: (count: number) => void;
+  initialFilter?: RequestFilter;
 }) {
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const [requests, setRequests] = useState<AccessRequestRecord[]>([]);
-  const [filter, setFilter] = useState<RequestFilter>("pending");
+  const [filter, setFilter] = useState<RequestFilter>(initialFilter);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [busyRequestId, setBusyRequestId] = useState("");

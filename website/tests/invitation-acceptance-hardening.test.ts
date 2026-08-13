@@ -11,6 +11,7 @@ const migration = read(
 );
 const callback = read("../app/auth/callback/route.ts");
 const transition = read("../components/auth-session-transition.tsx");
+const requestsPanel = read("../components/access-requests-panel.tsx");
 
 test("confirmed accounts still require explicit invitation acceptance", () => {
   assert.match(migration, /normalized_role,\s*'approved'/);
@@ -29,4 +30,11 @@ test("email callbacks clear stale browser sessions before invitation activation"
   assert.match(transition, /window\.sessionStorage/);
   assert.match(transition, /key\?\.startsWith\("sb-"\)/);
   assert.match(transition, /window\.location\.replace\(nextPath\)/);
+});
+
+test("invitation queue supports every organization role and resending", () => {
+  assert.match(requestsPanel, /requested_role: "owner" \| "trainer" \| "viewer"/);
+  assert.match(requestsPanel, /if \(role === "owner"\) return "مالك الجهة"/);
+  assert.match(requestsPanel, /إعادة إرسال الدعوة/);
+  assert.match(requestsPanel, /\/api\/access-requests\/\$\{requestRecord\.id\}\/resend/);
 });
