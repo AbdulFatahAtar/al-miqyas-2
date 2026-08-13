@@ -32,6 +32,7 @@ test("password reset validates the recovery user before changing credentials", (
 test("auth callback reports failed exchanges and forbids response caching", () => {
   assert.match(callbackSource, /exchangeCodeForSession\(code\)/);
   assert.match(callbackSource, /exchangeFailed = Boolean\(error\)/);
+  assert.match(callbackSource, /\/auth\/session-transition\?next=/);
   assert.match(callbackSource, /\/login\?error=auth_callback/);
   assert.match(callbackSource, /Cache-Control", "private, no-store"/);
 });

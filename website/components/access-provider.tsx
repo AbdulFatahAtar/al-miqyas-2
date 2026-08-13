@@ -54,6 +54,7 @@ function isPublicPath(pathname: string) {
     pathname === "/login" ||
     pathname === "/register" ||
     pathname === "/forgot-password" ||
+    pathname === "/auth/session-transition" ||
     pathname === "/accept-invitation" ||
     pathname.startsWith("/t/") ||
     pathname === "/verify" ||

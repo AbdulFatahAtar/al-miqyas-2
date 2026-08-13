@@ -14,7 +14,9 @@ export async function GET(request: Request) {
     exchangeFailed = Boolean(error);
   }
 
-  const destination = exchangeFailed ? "/login?error=auth_callback" : next;
+  const destination = exchangeFailed
+    ? "/login?error=auth_callback"
+    : `/auth/session-transition?next=${encodeURIComponent(next)}`;
   const response = NextResponse.redirect(
     new URL(destination, requestUrl.origin),
   );
