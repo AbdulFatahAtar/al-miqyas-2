@@ -5,6 +5,7 @@ import QRCode from "qrcode";
 import { getApplicationUrl } from "./access-requests";
 
 const sessionTokenPattern = /^[A-Za-z0-9_-]{43}$/;
+export const operationalJourneyCookie = "miqyas_session_journey";
 
 export function createOperationalSessionToken() {
   const token = randomBytes(32).toString("base64url");
@@ -17,6 +18,11 @@ export function isOperationalSessionToken(value: string) {
 
 export function hashOperationalSessionToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
+}
+
+export function createOperationalJourneyToken() {
+  const token = randomBytes(32).toString("base64url");
+  return { token, tokenHash: hashOperationalSessionToken(token) };
 }
 
 export async function createOperationalSessionQr(

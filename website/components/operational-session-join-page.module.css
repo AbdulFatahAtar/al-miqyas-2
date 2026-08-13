@@ -25,10 +25,22 @@
 .expiry { margin: 20px 0 0; padding: 12px; border-inline-start: 3px solid var(--state-warning); background: var(--state-warning-soft); color: var(--text-secondary); font-size: .82rem; }
 .formPanel { padding: 34px 40px 38px; background: var(--bg-surface); }
 .formPanel form { margin-block-start: 24px; display: grid; gap: 11px; }
+.modeSwitch { margin-block-start: 20px; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden; }
+.modeSwitch button { min-height: 44px; margin: 0; border-radius: 0; background: var(--bg-canvas); color: var(--text-secondary); }
+.modeSwitch button[aria-pressed="true"] { background: var(--text-primary); color: var(--bg-surface); }
 .formPanel label { color: var(--text-secondary); font-size: .8rem; font-weight: 600; }
 .formPanel input { width: 100%; min-height: 54px; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--bg-canvas); color: var(--text-primary); font-family: var(--font-mono); }
 .formPanel button { min-height: 48px; margin-block-start: 8px; border: 0; border-radius: var(--radius-sm); background: var(--tenant-accent); color: var(--tenant-accent-foreground); display: inline-flex; justify-content: center; align-items: center; gap: 9px; font-weight: 700; cursor: pointer; }
 .formPanel button:disabled { opacity: .6; cursor: wait; }
+.formPanel button:focus-visible,
+.formPanel input:focus-visible,
+.actions a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent-system) 45%, transparent);
+  outline-offset: 2px;
+}
+.fieldHint { color: var(--text-secondary); font-size: .75rem; line-height: 1.6; }
+.formPanel .consent { min-height: 44px; display: grid; grid-template-columns: 20px 1fr; align-items: start; gap: 10px; line-height: 1.65; }
+.formPanel .consent input { width: 18px; min-height: 18px; margin-block-start: 3px; }
 .error { margin: 4px 0 0; padding: 10px 12px; border-inline-start: 3px solid var(--state-danger); background: var(--state-danger-soft); color: var(--state-danger); font-size: .82rem; }
 .note { margin: 18px 0 0; padding-block-start: 14px; border-block-start: 1px solid var(--border-subtle); line-height: 1.7; }
 .state { min-height: 300px; padding: 56px 0; border-block-end: 1px solid var(--border-subtle); display: grid; grid-template-columns: 52px minmax(0,1fr); gap: 18px; align-items: center; }

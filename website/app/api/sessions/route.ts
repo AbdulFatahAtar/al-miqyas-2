@@ -36,6 +36,7 @@ type OperationalSessionRow = {
   scheduled_for: string;
   opened_at: string | null;
   token_expires_at: string | null;
+  allow_self_registration: boolean;
   created_at: string;
 };
 
@@ -93,6 +94,7 @@ export async function POST(request: Request) {
   const stationKey = typeof body.stationKey === "string" ? body.stationKey.toUpperCase() : "";
   const scheduledFor = typeof body.scheduledFor === "string" ? body.scheduledFor : "";
   const openNow = body.openNow === true;
+  const allowSelfRegistration = body.allowSelfRegistration === true;
   const tokenMinutes = Number(body.tokenMinutes ?? 120);
   const scheduledDate = new Date(scheduledFor);
 
@@ -130,6 +132,7 @@ export async function POST(request: Request) {
     target_title: title,
     target_token_expires_at: expiresAt,
     target_token_hash: generatedToken?.tokenHash ?? null,
+    target_allow_self_registration: allowSelfRegistration,
   });
 
   if (error) {

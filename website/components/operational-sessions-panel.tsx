@@ -15,6 +15,8 @@ type Attendee = {
   traineeCode: string;
   traineeName: string;
   joinedAt: string;
+  registrationSource: "existing" | "self_registration";
+  identityAssurance: "contact_match" | "self_asserted";
 };
 type OperationalSession = {
   id: string;
@@ -32,6 +34,7 @@ type OperationalSession = {
   closed_at: string | null;
   cancelled_at: string | null;
   token_expires_at: string | null;
+  allow_self_registration: boolean;
   attendance_count: number;
   attendees: Attendee[];
   created_at: string;
@@ -88,6 +91,7 @@ export function OperationalSessionsPanel({ organizationId }: { organizationId: s
     scheduledFor: localDateTimeValue(),
     openNow: true,
     tokenMinutes: "120",
+    allowSelfRegistration: true,
   });
 
   const loadData = useCallback(async () => {
@@ -142,6 +146,7 @@ export function OperationalSessionsPanel({ organizationId }: { organizationId: s
           scheduledFor: new Date(form.scheduledFor).toISOString(),
           openNow: form.openNow,
           tokenMinutes: Number(form.tokenMinutes),
+          allowSelfRegistration: form.allowSelfRegistration,
         }),
       });
       const payload = (await response.json()) as { session?: OperationalSession; join?: JoinPayload | null; message?: string };
@@ -201,6 +206,7 @@ export function OperationalSessionsPanel({ organizationId }: { organizationId: s
           <label><span>موعد الجلسة</span><input type="datetime-local" value={form.scheduledFor} onChange={(event) => setForm({ ...form, scheduledFor: event.target.value })} required /></label>
           <label><span>صلاحية الرمز بالدقائق</span><select value={form.tokenMinutes} onChange={(event) => setForm({ ...form, tokenMinutes: event.target.value })} disabled={!form.openNow}><option value="30">30 دقيقة</option><option value="60">ساعة</option><option value="120">ساعتان</option><option value="240">4 ساعات</option><option value="480">8 ساعات</option></select></label>
           <label className={styles.check}><input type="checkbox" checked={form.openNow} onChange={(event) => setForm({ ...form, openNow: event.target.checked })} /><span>فتح الجلسة وإصدار QR الآن</span></label>
+          <label className={styles.check}><input type="checkbox" checked={form.allowSelfRegistration} onChange={(event) => setForm({ ...form, allowSelfRegistration: event.target.checked })} /><span>السماح للمشاركين الجدد بالتسجيل من QR دون حساب</span></label>
           <button className="button button-primary" type="submit" disabled={isSaving || !form.cohortId}>{isSaving ? "جارٍ الحفظ..." : "إنشاء الجلسة"}</button>
         </form>
       )}
@@ -208,7 +214,7 @@ export function OperationalSessionsPanel({ organizationId }: { organizationId: s
       {joinPayload && (
         <section className={styles.qrSheet} aria-label="رمز الالتحاق الجديد">
           <Image src={joinPayload.qrDataUrl} alt="QR الالتحاق بالجلسة" width={220} height={220} unoptimized />
-          <div><span>QR صادر من الخادم</span><h3>امسح الرمز من هاتف المتدرّب</h3><p>هذا الرمز يحدد الجلسة فقط. سيطلب الهاتف معرّف AMD ووسيلة التواصل المسجلة لإثبات الهوية.</p><code dir="ltr">{joinPayload.joinUrl}</code><div><button className="button button-secondary" type="button" onClick={() => void copyJoinUrl()}>نسخ الرابط</button><button className="button button-tertiary" type="button" onClick={() => { setJoinPayload(null); setJoinSessionId(""); }}>إخفاء الرمز</button></div></div>
+          <div><span>QR صادر من الخادم</span><h3>امسح الرمز من هاتف المشارك</h3><p>المتدرّب المسجل يثبت هويته، والمشارك الجديد يسجل نفسه إذا سمحت إعدادات الجلسة بذلك. لا يحتاج أي منهما إلى حساب دخول.</p><code dir="ltr">{joinPayload.joinUrl}</code><div><button className="button button-secondary" type="button" onClick={() => void copyJoinUrl()}>نسخ الرابط</button><button className="button button-tertiary" type="button" onClick={() => { setJoinPayload(null); setJoinSessionId(""); }}>إخفاء الرمز</button></div></div>
         </section>
       )}
 
@@ -217,7 +223,7 @@ export function OperationalSessionsPanel({ organizationId }: { organizationId: s
           {sessions.map((session, index) => (
             <article key={session.id} className={joinSessionId === session.id ? styles.highlight : undefined}>
               <header><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{session.title}</h3><p>{session.program_title} · {session.cohort_title}</p></div><b data-status={session.status}>{statusLabels[session.status]}</b></header>
-              <dl><div><dt>المحطة</dt><dd dir="ltr">{session.station_key}</dd></div><div><dt>الموعد</dt><dd>{formatDate(session.scheduled_for)}</dd></div><div><dt>context.registration</dt><dd dir="ltr">{session.registration}</dd></div><div><dt>الملتحقون</dt><dd>{session.attendance_count}</dd></div><div><dt>انتهاء QR</dt><dd>{formatDate(session.token_expires_at)}</dd></div></dl>
+              <dl><div><dt>المحطة</dt><dd dir="ltr">{session.station_key}</dd></div><div><dt>الموعد</dt><dd>{formatDate(session.scheduled_for)}</dd></div><div><dt>context.registration</dt><dd dir="ltr">{session.registration}</dd></div><div><dt>الملتحقون</dt><dd>{session.attendance_count}</dd></div><div><dt>التسجيل الذاتي</dt><dd>{session.allow_self_registration ? "مسموح" : "مغلق"}</dd></div><div><dt>انتهاء QR</dt><dd>{formatDate(session.token_expires_at)}</dd></div></dl>
               {session.attendees.length > 0 && <details><summary>عرض الملتحقين ({session.attendees.length})</summary><ul>{session.attendees.map((attendee) => <li key={attendee.attendanceId}><span><strong>{attendee.traineeName}</strong><small dir="ltr">{attendee.traineeCode}</small></span><time dateTime={attendee.joinedAt}>{formatDate(attendee.joinedAt)}</time></li>)}</ul></details>}
               <footer>
                 {session.status === "scheduled" && <button type="button" onClick={() => void runAction(session.id, "open")} disabled={busySessionId === session.id}>فتح وإصدار QR</button>}

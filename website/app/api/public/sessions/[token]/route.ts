@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import { createRequestFingerprint, firstRpcRow } from "../../../../../lib/access-requests";
 import { isTrustedSameOriginRequest } from "../../../../../lib/http/request-security";
 import {
+  createOperationalJourneyToken,
   hashOperationalSessionToken,
   isOperationalSessionToken,
+  operationalJourneyCookie,
 } from "../../../../../lib/operational-sessions";
 import {
   createSupabaseServiceRoleClient,
@@ -20,6 +22,7 @@ type PublicSession = {
   cohort_title: string;
   station_key: string;
   token_expires_at: string;
+  allow_self_registration: boolean;
 };
 
 type JoinedSession = {
@@ -34,6 +37,33 @@ type JoinedSession = {
   joined_at: string;
   already_joined: boolean;
 };
+
+async function attachJourneyCookie(
+  supabase: NonNullable<Awaited<ReturnType<typeof consumeLimit>>["supabase"]>,
+  attendance: JoinedSession,
+) {
+  const journeyToken = createOperationalJourneyToken();
+  const expiresAt = new Date(Date.now() + 12 * 60 * 60_000);
+  const { data, error } = await supabase.rpc("issue_operational_session_access_token", {
+    target_attendance_id: attendance.attendance_id,
+    target_expires_at: expiresAt.toISOString(),
+    target_token_hash: journeyToken.tokenHash,
+  });
+  if (error || data !== true) return null;
+
+  const response = NextResponse.json(
+    { attendance },
+    { headers: { "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" } },
+  );
+  response.cookies.set(operationalJourneyCookie, journeyToken.token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    expires: expiresAt,
+  });
+  return response;
+}
 
 function serviceClient() {
   try {
@@ -161,8 +191,9 @@ export async function POST(
     );
   }
 
-  return NextResponse.json(
-    { attendance },
-    { headers: { "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" } },
+  const response = await attachJourneyCookie(limited.supabase, attendance);
+  return response ?? NextResponse.json(
+    { message: "تم الالتحاق، لكن تعذر إصدار تصريح الرحلة. أعد المحاولة." },
+    { status: 503, headers: { "Cache-Control": "no-store" } },
   );
 }

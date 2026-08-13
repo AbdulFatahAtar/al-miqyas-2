@@ -14,6 +14,7 @@ type PublicSession = {
   cohort_title: string;
   station_key: string;
   token_expires_at: string;
+  allow_self_registration: boolean;
 };
 
 type Attendance = {
@@ -54,6 +55,11 @@ export function OperationalSessionJoinPage({ token }: { token: string }) {
   const [attendance, setAttendance] = useState<Attendance | null>(null);
   const [traineeCode, setTraineeCode] = useState("");
   const [identityValue, setIdentityValue] = useState("");
+  const [mode, setMode] = useState<"existing" | "new">("existing");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [consent, setConsent] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -72,6 +78,7 @@ export function OperationalSessionJoinPage({ token }: { token: string }) {
           return;
         }
         setSession(payload.session);
+        if (payload.session.allow_self_registration) setMode("new");
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") return;
         setErrorMessage("تعذر التحقق من رابط الجلسة الآن.");
@@ -95,15 +102,34 @@ export function OperationalSessionJoinPage({ token }: { token: string }) {
       });
       const payload = (await response.json()) as { attendance?: Attendance; message?: string };
       if (!response.ok || !payload.attendance) {
-        setErrorMessage(payload.message ?? "تعذر التحقق من الهوية والالتحاق بالجلسة.");
+        setErrorMessage(payload.message ?? "تعذرت مطابقة السجل والالتحاق بالجلسة.");
         return;
       }
       setAttendance(payload.attendance);
+      window.location.assign("/session");
     } catch {
       setErrorMessage("تعذر الاتصال بخدمة الجلسة. حاول مجددًا.");
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  async function registerSession(event: FormEvent) {
+    event.preventDefault();
+    setIsSubmitting(true); setErrorMessage("");
+    try {
+      const response = await fetch(`/api/public/sessions/${encodeURIComponent(token)}/register`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, phone, consent }),
+      });
+      const payload = (await response.json()) as { attendance?: Attendance; message?: string };
+      if (!response.ok || !payload.attendance) {
+        setErrorMessage(payload.message ?? "تعذر التسجيل والالتحاق بالجلسة."); return;
+      }
+      setAttendance(payload.attendance);
+      window.location.assign("/session");
+    } catch { setErrorMessage("تعذر الاتصال بخدمة التسجيل. حاول مجددًا."); }
+    finally { setIsSubmitting(false); }
   }
 
   return (
@@ -136,7 +162,7 @@ export function OperationalSessionJoinPage({ token }: { token: string }) {
           <section className={`${styles.state} ${styles.success}`} aria-live="polite">
             <Icon name="check" size={26} />
             <div>
-              <h2>{attendance.already_joined ? "التحاقك مسجل مسبقًا" : "تم إثبات الهوية وتسجيل الالتحاق"}</h2>
+              <h2>{attendance.already_joined ? "التحاقك مسجل مسبقًا" : "تمت مطابقة السجل وتسجيل الالتحاق"}</h2>
               <p>{attendance.trainee_name} · <b dir="ltr">{attendance.trainee_code}</b></p>
               <dl className={styles.context}>
                 <div><dt>معرّف تسجيل xAPI</dt><dd dir="ltr">{attendance.registration}</dd></div>
@@ -148,27 +174,44 @@ export function OperationalSessionJoinPage({ token }: { token: string }) {
         ) : session ? (
           <div className={styles.joinGrid}>
             <section className={styles.protocol}>
-              <span className={styles.eyebrow}>لماذا نطلب هويتين؟</span>
-              <h2>رمز الجلسة لا يثبت هوية المتدرّب</h2>
-              <ol>
-                <li><b>01</b><span><strong>رمز الجلسة</strong><small>يثبت أنك فتحت الجلسة الصحيحة.</small></span></li>
-                <li><b>02</b><span><strong>معرّف المتدرّب</strong><small>يربطك بسجل AMD الخاص بك.</small></span></li>
-                <li><b>03</b><span><strong>وسيلة التواصل المسجلة</strong><small>تمنع استخدام معرّف شخص آخر.</small></span></li>
-              </ol>
+              <span className={styles.eyebrow}>{mode === "new" ? "مشاركة دون حساب" : "مطابقة مستقلة عن الرمز"}</span>
+              <h2>{mode === "new" ? "سجّل مرة وابدأ الرحلة" : "رمز الجلسة لا يطابق سجل المشارك"}</h2>
+              {mode === "new" ? (
+                <ol>
+                  <li><b>01</b><span><strong>سجل جديد</strong><small>ينشئ النظام معرّف AMD خاصًا بك.</small></span></li>
+                  <li><b>02</b><span><strong>الدفعة والجلسة</strong><small>يربطك بهما في عملية واحدة.</small></span></li>
+                  <li><b>03</b><span><strong>رحلة القياس</strong><small>تبدأ القبلي ثم الأداء والبعدي والنتيجة.</small></span></li>
+                </ol>
+              ) : (
+                <ol>
+                  <li><b>01</b><span><strong>رمز الجلسة</strong><small>يثبت أنك فتحت الجلسة الصحيحة.</small></span></li>
+                  <li><b>02</b><span><strong>معرّف المشارك</strong><small>يحدد سجل AMD المطلوب.</small></span></li>
+                  <li><b>03</b><span><strong>وسيلة التواصل المسجلة</strong><small>تُطابق القيمة المحفوظة في السجل.</small></span></li>
+                </ol>
+              )}
               <p className={styles.expiry}>ينتهي الرمز في {formatExpiry(session.token_expires_at)}.</p>
             </section>
             <section className={styles.formPanel}>
-              <h2>إثبات الهوية والالتحاق</h2>
-              <p>أدخل معرّفك ووسيلة التواصل نفسها المحفوظة في سجل المتدرّب.</p>
-              <form onSubmit={joinSession}>
+              <h2>{mode === "new" ? "تسجيل مشارك جديد" : "مطابقة السجل والالتحاق"}</h2>
+              <p>{mode === "new" ? "سننشئ لك معرّف AMD ونربطك بهذه الدفعة والجلسة دون حساب دخول." : "أدخل معرّفك ووسيلة التواصل نفسها المحفوظة في سجل المتدرّب."}</p>
+              {session.allow_self_registration && <div className={styles.modeSwitch} role="group" aria-label="نوع المشارك"><button type="button" aria-pressed={mode === "existing"} onClick={() => { setMode("existing"); setErrorMessage(""); }}>لدي معرّف AMD</button><button type="button" aria-pressed={mode === "new"} onClick={() => { setMode("new"); setErrorMessage(""); }}>أشارك لأول مرة</button></div>}
+              {mode === "existing" ? <form onSubmit={joinSession}>
                 <label htmlFor="trainee-code">المعرّف الموحد</label>
                 <input id="trainee-code" dir="ltr" value={traineeCode} onChange={(event) => setTraineeCode(event.target.value.toUpperCase())} placeholder="AMD-XXXXX" pattern="AMD-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{5}" required autoComplete="off" />
                 <label htmlFor="identity-value">البريد الإلكتروني أو رقم الجوال المسجل</label>
                 <input id="identity-value" dir="ltr" value={identityValue} onChange={(event) => setIdentityValue(event.target.value)} placeholder="name@example.com أو 05xxxxxxxx" minLength={5} maxLength={254} required autoComplete="email" />
                 {errorMessage && <p className={styles.error} role="alert">{errorMessage}</p>}
-                <button type="submit" disabled={isSubmitting}>{isSubmitting ? "جارٍ التحقق..." : "إثبات الهوية والالتحاق"}<Icon name={isSubmitting ? "clock" : "check"} size={17} /></button>
-              </form>
-              <p className={styles.note}>لا تُعرض بيانات التواصل ولا تُحفظ القيمة التي تدخلها ضمن سجل الجلسة.</p>
+                <button type="submit" disabled={isSubmitting}>{isSubmitting ? "جارٍ التحقق..." : "مطابقة السجل والالتحاق"}<Icon name={isSubmitting ? "clock" : "check"} size={17} /></button>
+              </form> : <form onSubmit={registerSession}>
+                <label htmlFor="participant-name">الاسم الكامل</label><input id="participant-name" value={fullName} onChange={(event) => setFullName(event.target.value)} minLength={2} maxLength={200} autoComplete="name" required />
+                <label htmlFor="participant-email">البريد الإلكتروني</label><input id="participant-email" dir="ltr" type="email" value={email} onChange={(event) => setEmail(event.target.value)} maxLength={254} autoComplete="email" />
+                <label htmlFor="participant-phone">رقم الجوال</label><input id="participant-phone" dir="ltr" type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} maxLength={32} autoComplete="tel" />
+                <small className={styles.fieldHint}>أدخل البريد أو الجوال على الأقل. وسيلة التواصل غير موثقة حتى تُضاف خدمة تحقق مستقلة.</small>
+                <label className={styles.consent}><input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} required /><span>أوافق على حفظ بياناتي لربط القياسات والتجربة وإصدار النتيجة والشهادة ضمن هذه الدفعة.</span></label>
+                {errorMessage && <p className={styles.error} role="alert">{errorMessage}</p>}
+                <button type="submit" disabled={isSubmitting || (!email.trim() && !phone.trim())}>{isSubmitting ? "جارٍ التسجيل..." : "التسجيل وبدء الرحلة"}<Icon name={isSubmitting ? "clock" : "arrow"} size={17} /></button>
+              </form>}
+              <p className={styles.note}>{mode === "new" ? "لا يُنشأ حساب دخول أو كلمة مرور. ستحصل على معرّف ثابت تستخدمه في رحلاتك اللاحقة." : "لا تُعرض بيانات التواصل ولا تُحفظ القيمة التي تدخلها ضمن سجل الجلسة."}</p>
             </section>
           </div>
         ) : (

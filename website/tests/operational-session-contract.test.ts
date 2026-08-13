@@ -13,11 +13,15 @@ const draftEligibilityMigration = read(
 const joinConflictMigration = read(
   "../supabase/migrations/202608130036_fix_operational_session_join_conflict.sql",
 );
+const selfRegistrationMigration = read(
+  "../supabase/migrations/202608130037_session_self_registration_journey.sql",
+);
 const sessionRoute = read("../app/api/sessions/route.ts");
 const actionRoute = read("../app/api/sessions/[sessionId]/actions/route.ts");
 const publicRoute = read("../app/api/public/sessions/[token]/route.ts");
 const tokenLibrary = read("../lib/operational-sessions.ts");
 const joinPage = read("../components/operational-session-join-page.tsx");
+const journeyPage = read("../components/operational-session-journey-page.tsx");
 const panel = read("../components/operational-sessions-panel.tsx");
 const proxy = read("../proxy.ts");
 const accessProvider = read("../components/access-provider.tsx");
@@ -61,7 +65,7 @@ test("public join requires independent trainee identity and active cohort enroll
   );
   assert.doesNotMatch(migration, /metadata[\s\S]{0,200}target_identity_value/);
   assert.match(joinPage, /البريد الإلكتروني أو رقم الجوال المسجل/);
-  assert.match(joinPage, /رمز الجلسة لا يثبت هوية المتدرّب/);
+  assert.match(joinPage, /رمز الجلسة لا يطابق سجل المشارك/);
 });
 
 test("public session route is rate limited and service-role only", () => {
@@ -96,6 +100,8 @@ test("session UI exposes creation, lifecycle, QR, attendees, and public entry", 
   assert.match(panel, /عرض الملتحقين/);
   assert.match(proxy, /pathname\.startsWith\("\/join\/"\)/);
   assert.match(accessProvider, /pathname\.startsWith\("\/join\/"\)/);
+  assert.match(proxy, /pathname === "\/session"/);
+  assert.match(accessProvider, /pathname === "\/session"/);
 });
 
 test("pilot draft programs and cohorts can create repeated operational sessions", () => {
@@ -122,4 +128,32 @@ test("public attendance join uses an unambiguous conflict target", () => {
     /on conflict on constraint operational_session_attendances_session_id_enrollment_id_key do nothing/,
   );
   assert.match(joinConflictMigration, /pg_get_functiondef/);
+});
+
+test("live sessions can explicitly allow atomic self-registration without an Auth account", () => {
+  assert.match(selfRegistrationMigration, /allow_self_registration boolean not null default false/);
+  assert.match(selfRegistrationMigration, /create function public\.register_public_operational_session/);
+  assert.match(selfRegistrationMigration, /insert into public\.trainees/);
+  assert.match(selfRegistrationMigration, /insert into public\.enrollments/);
+  assert.match(selfRegistrationMigration, /insert into public\.operational_session_attendances/);
+  assert.match(selfRegistrationMigration, /insert into public\.operational_session_access_tokens/);
+  assert.match(selfRegistrationMigration, /'trainee\.self_registered'/);
+  assert.match(selfRegistrationMigration, /'registration_source', 'self_registration'/);
+  assert.match(selfRegistrationMigration, /identity_assurance = 'self_asserted'/);
+  assert.doesNotMatch(selfRegistrationMigration, /identity_verified/);
+  assert.match(selfRegistrationMigration, /operational_session_access_tokens_require_active_org/);
+  assert.match(selfRegistrationMigration, /to service_role/);
+});
+
+test("participant journey credentials are hashed, expiring, and stored in an HttpOnly cookie", () => {
+  const registerRoute = read("../app/api/public/sessions/[token]/register/route.ts");
+  const journeyRoute = read("../app/api/public/session-journey/route.ts");
+  assert.match(selfRegistrationMigration, /token_hash text not null unique/);
+  assert.match(selfRegistrationMigration, /expires_at timestamptz not null/);
+  assert.match(registerRoute, /httpOnly: true/);
+  assert.match(registerRoute, /sameSite: "lax"/);
+  assert.match(journeyRoute, /hashOperationalSessionToken\(rawToken\)/);
+  assert.match(journeyPage, /document\.visibilityState !== "visible"/);
+  assert.match(journeyPage, /window\.setInterval\(refresh, 10_000\)/);
+  assert.match(journeyPage, /journey\.live_event_count === 0/);
 });
