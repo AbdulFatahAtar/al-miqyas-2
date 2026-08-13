@@ -165,6 +165,10 @@ test("participant journey credentials are hashed, expiring, and stored in an Htt
   assert.match(journeyPage, /document\.visibilityState !== "visible"/);
   assert.match(journeyPage, /window\.setInterval\(refresh, 10_000\)/);
   assert.match(journeyPage, /journey\.live_event_count === 0/);
+  assert.match(journeyPage, /setSelectedStageIndex\(index\)/);
+  assert.match(journeyPage, /aria-pressed=\{index === visibleStageIndex\}/);
+  assert.match(journeyPage, /aria-current=\{index === activeIndex \? "step" : undefined\}/);
+  assert.match(journeyPage, /className=\{styles\.brand\} href="\/login"/);
   assert.match(journeyPage, /openExternalTabPlaceholder\(\)/);
   assert.match(journeyPage, /navigateExternalTab\(externalTab, payload\.url\)/);
   assert.match(externalTab, /window\.open\("about:blank", "_blank"\)/);

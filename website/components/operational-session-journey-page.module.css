@@ -1,9 +1,10 @@
 .page { min-height: 100vh; min-height: 100dvh; background: var(--bg-canvas); }
 .masthead { min-height: 76px; border-block-end: 1px solid var(--border-subtle); background: var(--bg-surface); }
 .masthead > div { width: min(100% - 32px, 1100px); min-height: inherit; margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-.brand { display: flex; align-items: center; gap: 11px; }
+.brand { display: flex; align-items: center; gap: 11px; color: inherit; text-decoration: none; }
 .brand img { width: 40px; height: 40px; object-fit: contain; }
 .brand > span { display: grid; line-height: 1.4; }
+.brand:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent-system) 45%, transparent); outline-offset: 5px; }
 .brand small, .head > div > span, .actionPanel > span { color: var(--text-secondary); font-size: .75rem; }
 .document { width: min(100% - 32px, 1100px); margin-inline: auto; padding-block: 40px 56px; }
 .head { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 24px; align-items: end; padding-block-end: 22px; border-block-end: 2px solid var(--text-primary); }
@@ -14,14 +15,19 @@
 .head dt { color: var(--text-secondary); font-size: .75rem; }
 .head dd { margin: 0; font-weight: 700; }
 .timeline { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); border-block-end: 1px solid var(--border-subtle); }
-.timeline li { min-height: 118px; padding: 18px 14px; border-inline-start: 1px solid var(--border-subtle); display: grid; align-content: center; gap: 4px; }
+.timeline li { min-height: 118px; padding: 0; border-inline-start: 1px solid var(--border-subtle); }
 .timeline li:first-child { border-inline-start: 0; }
-.timeline b { color: var(--text-tertiary); font: 700 .75rem/1.5 var(--font-mono); }
-.timeline span { font-weight: 700; }
-.timeline small { color: var(--text-secondary); font-size: .75rem; }
+.stageButton { width: 100%; min-height: inherit; padding: 18px 14px; border: 0; background: transparent; color: inherit; text-align: start; display: grid; align-content: center; gap: 4px; cursor: pointer; }
+.stageButton:hover { background: color-mix(in srgb, var(--bg-surface) 72%, transparent); }
+.stageButton:focus-visible { position: relative; z-index: 1; outline: 3px solid color-mix(in srgb, var(--accent-system) 45%, transparent); outline-offset: -3px; }
+.stageButton b { color: var(--text-tertiary); font: 700 .75rem/1.5 var(--font-mono); }
+.stageButton span { font-weight: 700; }
+.stageButton small { color: var(--text-secondary); font-size: .75rem; }
 .timeline li[data-state="complete"] b, .timeline li[data-state="complete"] small { color: var(--state-success); }
-.timeline li[data-state="active"] { box-shadow: inset 0 -3px var(--tenant-accent); background: var(--bg-surface); }
+.timeline li[data-state="active"] { background: var(--bg-surface); }
 .timeline li[data-state="active"] b, .timeline li[data-state="active"] small { color: var(--tenant-accent); }
+.timeline li[data-selected="true"] { box-shadow: inset 0 -3px var(--tenant-accent); }
+.timeline li[data-selected="true"] .stageButton { background: var(--bg-surface); }
 .actionPanel { min-height: 290px; padding: 48px 0; display: grid; align-content: center; justify-items: start; border-block-end: 1px solid var(--border-subtle); }
 .actionPanel h2 { margin: 8px 0 10px; font-size: 1.5rem; }
 .actionPanel > p { max-width: 720px; margin: 0; color: var(--text-secondary); line-height: 1.8; }
