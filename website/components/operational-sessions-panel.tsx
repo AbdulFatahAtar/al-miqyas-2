@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { createSupabaseBrowserClient } from "../lib/supabase/client";
 import { Icon } from "./icons";
@@ -67,10 +68,11 @@ function formatDate(value: string | null) {
 
 export function OperationalSessionsPanel({ organizationId }: { organizationId: string }) {
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
+  const searchParams = useSearchParams();
   const [programs, setPrograms] = useState<ProgramOption[]>([]);
   const [cohorts, setCohorts] = useState<CohortOption[]>([]);
   const [sessions, setSessions] = useState<OperationalSession[]>([]);
-  const [showCreate, setShowCreate] = useState(false);
+  const [showCreate, setShowCreate] = useState(searchParams.get("create") === "1");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [busySessionId, setBusySessionId] = useState("");
@@ -91,8 +93,8 @@ export function OperationalSessionsPanel({ organizationId }: { organizationId: s
   const loadData = useCallback(async () => {
     setErrorMessage("");
     const [programResult, cohortResult, sessionsResponse] = await Promise.all([
-      supabase.from("programs").select("id, title_ar, status").eq("org_id", organizationId).eq("status", "active").order("created_at"),
-      supabase.from("cohorts").select("id, program_id, title, code, status").eq("org_id", organizationId).in("status", ["open", "in_progress"]).order("created_at"),
+      supabase.from("programs").select("id, title_ar, status").eq("org_id", organizationId).in("status", ["draft", "active"]).order("created_at"),
+      supabase.from("cohorts").select("id, program_id, title, code, status").eq("org_id", organizationId).in("status", ["draft", "open", "in_progress"]).order("created_at"),
       fetch(`/api/sessions?organizationId=${encodeURIComponent(organizationId)}`, { cache: "no-store" }),
     ]);
     const sessionsPayload = (await sessionsResponse.json()) as { sessions?: OperationalSession[]; message?: string };
@@ -191,7 +193,7 @@ export function OperationalSessionsPanel({ organizationId }: { organizationId: s
 
       {showCreate && (
         <form className={styles.createForm} onSubmit={createSession}>
-          <header><div><span>01</span><h3>تعريف الجلسة</h3></div><p>لا يمكن إنشاء جلسة لبرنامج أو دفعة غير نشطين.</p></header>
+          <header><div><span>01</span><h3>تعريف الجلسة</h3></div><p>يمكن إنشاء أكثر من جلسة للبرنامج والدفعة نفسيهما؛ الممنوع فقط هو استخدام سجل مؤرشف.</p></header>
           <label><span>اسم الجلسة</span><input value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} minLength={2} maxLength={160} required /></label>
           <label><span>البرنامج</span><select value={form.programId} onChange={(event) => { const programId = event.target.value; setForm({ ...form, programId, cohortId: cohorts.find((item) => item.program_id === programId)?.id ?? "" }); }} required><option value="">اختر البرنامج</option>{programs.map((program) => <option key={program.id} value={program.id}>{program.title_ar}</option>)}</select></label>
           <label><span>الدفعة</span><select value={form.cohortId} onChange={(event) => setForm({ ...form, cohortId: event.target.value })} required><option value="">اختر الدفعة</option>{availableCohorts.map((cohort) => <option key={cohort.id} value={cohort.id}>{cohort.title} · {cohort.code}</option>)}</select></label>

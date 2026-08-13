@@ -15,6 +15,11 @@ export default async function Page() {
         "trainees.manage",
         access.activeOrganizationId,
       )}
+      canManageSessions={canAccess(
+        access.authorization,
+        "sessions.manage",
+        access.activeOrganizationId,
+      )}
     />
   );
 }

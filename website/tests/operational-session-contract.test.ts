@@ -7,6 +7,9 @@ function read(relativePath: string) {
 }
 
 const migration = read("../supabase/migrations/202608130034_operational_sessions.sql");
+const draftEligibilityMigration = read(
+  "../supabase/migrations/202608130035_allow_draft_operational_sessions.sql",
+);
 const sessionRoute = read("../app/api/sessions/route.ts");
 const actionRoute = read("../app/api/sessions/[sessionId]/actions/route.ts");
 const publicRoute = read("../app/api/public/sessions/[token]/route.ts");
@@ -86,4 +89,22 @@ test("session UI exposes creation, lifecycle, QR, attendees, and public entry", 
   assert.match(panel, /عرض الملتحقين/);
   assert.match(proxy, /pathname\.startsWith\("\/join\/"\)/);
   assert.match(accessProvider, /pathname\.startsWith\("\/join\/"\)/);
+});
+
+test("pilot draft programs and cohorts can create repeated operational sessions", () => {
+  assert.match(
+    draftEligibilityMigration,
+    /cohort\.status in \('draft', 'open', 'in_progress'\)/,
+  );
+  assert.match(
+    draftEligibilityMigration,
+    /program\.status in \('draft', 'active'\)/,
+  );
+  assert.match(draftEligibilityMigration, /repeated sessions are allowed/);
+  assert.doesNotMatch(
+    migration,
+    /unique \(cohort_id, station_key\)|unique \(cohort_id, scheduled_for\)/,
+  );
+  assert.match(panel, /\.in\("status", \["draft", "active"\]\)/);
+  assert.match(panel, /\.in\("status", \["draft", "open", "in_progress"\]\)/);
 });

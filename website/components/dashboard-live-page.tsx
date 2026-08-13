@@ -59,9 +59,11 @@ function countValue(result: { count: number | null; error: unknown }) {
 export async function DashboardLivePage({
   organizationId,
   canManageTrainees,
+  canManageSessions,
 }: {
   organizationId: string;
   canManageTrainees: boolean;
+  canManageSessions: boolean;
 }) {
   const supabase = await createSupabaseServerClient();
   const [
@@ -233,6 +235,12 @@ export async function DashboardLivePage({
               <Icon name="sessions" size={17} />
               متابعة الجلسات
             </Link>
+            {canManageSessions && (
+              <Link href="/sessions?create=1" className="button button-primary">
+                <Icon name="plus" size={17} />
+                جلسة جديدة
+              </Link>
+            )}
             <Link href="/trainees" className="button button-primary">
               <Icon name={canManageTrainees ? "plus" : "trainees"} size={17} />
               {canManageTrainees ? "تسجيل متدرّب" : "عرض المتدرّبين"}
